@@ -25,3 +25,4 @@ Local file mode bypasses hosted SSO so the app can be tested without Azure.
 The app includes `outputs/staticwebapp.config.json`, which requires authenticated users when deployed to Azure Static Web Apps.
 
 See `outputs/ENTRA-SSO-SETUP.md` for Microsoft Entra ID setup notes.
+test
