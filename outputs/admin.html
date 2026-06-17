@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Administration | Tabletop Command</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand-lockup">
+        <img src="assets/built-on-white.png" alt="Bedroc" />
+        <div>
+          <p class="eyebrow">Administrative setup</p>
+          <h1>Administration</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="ghost header-link">Back to exercise</a>
+      </div>
+    </header>
+
+    <main class="admin-console">
+      <aside class="admin-nav" aria-label="Admin sections">
+        <button class="admin-nav-item active" data-admin-section="runbooks" type="button">
+          <strong>Runbooks</strong>
+          <span>Create and manage tabletop templates</span>
+        </button>
+        <button class="admin-nav-item" data-admin-section="branding" type="button">
+          <strong>Branding</strong>
+          <span>Logo, colors, and report identity</span>
+        </button>
+        <button class="admin-nav-item" data-admin-section="users" type="button">
+          <strong>Users & Roles</strong>
+          <span>Future Entra-backed access</span>
+        </button>
+        <button class="admin-nav-item" data-admin-section="settings" type="button">
+          <strong>Settings</strong>
+          <span>Exercise defaults and policies</span>
+        </button>
+      </aside>
+
+      <section class="admin-page-shell admin-section active" id="admin-section-runbooks" aria-labelledby="runbookAdminTitle">
+        <header class="admin-page-header">
+          <div>
+            <p class="eyebrow">Runbook templates</p>
+            <h2 id="runbookAdminTitle">Administrative Interface</h2>
+          </div>
+          <button id="saveRunbookTop" class="primary" type="button">Save runbook</button>
+        </header>
+
+        <div class="admin-layout">
+          <aside class="admin-sidebar">
+            <div class="panel-heading">
+              <h3>Runbooks</h3>
+              <span id="runbookCount" class="count">0</span>
+            </div>
+            <div id="adminRunbookList" class="admin-list"></div>
+            <div class="admin-actions">
+              <button id="newRunbook">New</button>
+              <button id="duplicateRunbook">Duplicate</button>
+              <button id="deleteRunbook" class="danger-button">Delete</button>
+            </div>
+            <div class="admin-actions">
+              <button id="exportRunbook">Export</button>
+              <button id="importRunbook">Import</button>
+              <input id="importRunbookFile" class="file-input" type="file" accept="application/json,.json" />
+            </div>
+          </aside>
+
+          <section class="admin-editor">
+            <div class="form-grid two-column">
+              <label>
+                Runbook name
+                <input id="adminRunbookName" type="text" />
+              </label>
+              <label>
+                Default objective
+                <input id="adminRunbookObjective" type="text" />
+              </label>
+            </div>
+            <label>
+              Description
+              <textarea id="adminRunbookDescription" rows="3"></textarea>
+            </label>
+
+            <div class="event-editor-shell">
+              <div>
+                <div class="panel-heading">
+                  <h3>Scenario Events</h3>
+                  <button id="addRunbookEvent">Add event</button>
+                </div>
+                <div id="adminEventList" class="admin-list event-list"></div>
+              </div>
+
+              <form id="adminEventForm" class="event-form">
+                <div class="form-grid two-column">
+                  <label>
+                    Minute
+                    <input id="adminEventMinute" type="number" min="0" step="1" />
+                  </label>
+                  <label>
+                    Phase
+                    <input id="adminEventPhase" type="text" />
+                  </label>
+                </div>
+                <label>
+                  Title
+                  <input id="adminEventTitle" type="text" />
+                </label>
+                <label>
+                  Summary
+                  <textarea id="adminEventSummary" rows="3"></textarea>
+                </label>
+                <label>
+                  Facilitator prompt
+                  <textarea id="adminEventPrompt" rows="3"></textarea>
+                </label>
+                <label>
+                  SOC 2 controls
+                  <select id="adminEventControls" multiple></select>
+                </label>
+                <div class="admin-actions right">
+                  <button id="deleteRunbookEvent" class="danger-button" type="button">Delete event</button>
+                  <button class="primary" type="submit">Save event</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="admin-page-footer">
+              <p id="runbookAdminNotice" class="helper-text"></p>
+              <button id="saveRunbook" class="primary" type="button">Save runbook</button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="admin-page-shell admin-section" id="admin-section-branding" hidden>
+        <header class="admin-page-header">
+          <div>
+            <p class="eyebrow">Brand identity</p>
+            <h2>Branding</h2>
+          </div>
+          <button id="saveBrandingSettingsTop" class="primary" type="button">Save branding</button>
+        </header>
+        <div class="admin-settings-panel">
+          <div class="form-grid two-column">
+            <label>
+              Organization name
+              <input id="organizationName" type="text" />
+            </label>
+            <label>
+              Color palette
+              <select id="colorPalette"></select>
+            </label>
+            <label>
+              App header logo
+              <input id="appLogoUpload" type="file" accept="image/png,image/jpeg,image/webp" />
+            </label>
+            <label>
+              Report and timeline logo
+              <input id="documentLogoUpload" type="file" accept="image/png,image/jpeg,image/webp" />
+            </label>
+          </div>
+          <div id="palettePreview" class="palette-preview" aria-label="Selected color palette preview"></div>
+          <div id="customPaletteFields" class="custom-palette-fields" hidden>
+            <label>
+              Page background
+              <input id="customBg" type="color" />
+            </label>
+            <label>
+              Surface
+              <input id="customSurface" type="color" />
+            </label>
+            <label>
+              Header
+              <input id="customHeader" type="color" />
+            </label>
+            <label>
+              Body text
+              <input id="customText" type="color" />
+            </label>
+            <label>
+              Primary action
+              <input id="customPrimary" type="color" />
+            </label>
+            <label>
+              Accent
+              <input id="customAccent" type="color" />
+            </label>
+          </div>
+          <div class="logo-preview-row">
+            <div class="logo-preview-box">
+              <img id="appLogoPreview" src="assets/built-on-white.png" alt="App header logo preview" />
+            </div>
+            <div>
+              <h3>App header logo</h3>
+              <p class="helper-text">Used in the splash page, sign-in screen, app header, and admin header.</p>
+              <div class="admin-actions">
+                <button id="resetAppLogo" type="button">Use default app logo</button>
+              </div>
+            </div>
+          </div>
+          <div class="logo-preview-row">
+            <div class="logo-preview-box">
+              <img id="documentLogoPreview" src="assets/bedroc-logo-grey.png" alt="Report and timeline logo preview" />
+            </div>
+            <div>
+              <h3>Report and timeline logo</h3>
+              <p class="helper-text">Used in generated reports and timeline PDFs.</p>
+              <div class="admin-actions">
+                <button id="resetDocumentLogo" type="button">Use default document logo</button>
+              </div>
+            </div>
+          </div>
+          <div class="admin-page-footer inline-footer">
+            <p id="brandingSettingsNotice" class="helper-text"></p>
+            <button id="saveBrandingSettings" class="primary" type="button">Save branding</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-page-shell admin-section" id="admin-section-users" hidden>
+        <header class="admin-page-header">
+          <div>
+            <p class="eyebrow">Access control</p>
+            <h2>Users & Roles</h2>
+          </div>
+        </header>
+        <div class="admin-placeholder">
+          <h3>Entra role management</h3>
+          <p>User and role management should be backed by Microsoft Entra ID or server-side authorization when this moves beyond a static MVP.</p>
+          <ul>
+            <li>Admin</li>
+            <li>Facilitator</li>
+            <li>Viewer/Auditor</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="admin-page-shell admin-section" id="admin-section-settings" hidden>
+        <header class="admin-page-header">
+          <div>
+            <p class="eyebrow">Application defaults</p>
+            <h2>Settings</h2>
+          </div>
+          <button id="saveExerciseSettingsTop" class="primary" type="button">Save settings</button>
+        </header>
+        <div class="admin-settings-panel">
+          <label class="checkbox-row">
+            <input id="requireEvidenceBeforeCompletion" type="checkbox" />
+            <span>
+              <strong>Require evidence before completion</strong>
+              <small>Each scenario event must have at least one participant-entered evidence entry before the exercise can be completed.</small>
+            </span>
+          </label>
+          <div class="settings-card">
+            <h3>Control coverage scoring</h3>
+            <p class="helper-text">Set how much each activity contributes to the Control Coverage bars. Scores are capped at 100%.</p>
+            <div class="form-grid two-column">
+              <label>
+                % per revealed scenario event
+                <input id="coverageEventWeight" type="number" min="0" max="100" step="1" />
+              </label>
+              <label>
+                % per evidence item
+                <input id="coverageEvidenceWeight" type="number" min="0" max="100" step="1" />
+              </label>
+            </div>
+          </div>
+          <div class="admin-page-footer inline-footer">
+            <p id="exerciseSettingsNotice" class="helper-text"></p>
+            <button id="saveExerciseSettings" class="primary" type="button">Save settings</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="admin.js"></script>
+  </body>
+</html>
