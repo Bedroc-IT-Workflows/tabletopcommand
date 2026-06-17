@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tabletop Command</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section id="splashPage" class="splash-page" aria-labelledby="splashTitle">
+      <div class="splash-backdrop" aria-hidden="true">
+        <div class="splash-signal-grid">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <header class="splash-nav">
+        <img src="assets/built-on-white.png" alt="Bedroc" />
+        <a href="admin.html" class="ghost header-link">Administration</a>
+      </header>
+
+      <main class="splash-hero">
+        <section class="splash-copy">
+          <p class="eyebrow">SOC 2 tabletop command center</p>
+          <h1 id="splashTitle">Prove readiness before the incident proves otherwise.</h1>
+          <p class="splash-lede">
+            Run evidence-oriented ransomware, continuity, and disaster recovery exercises with decisions, owners, timelines, and audit-ready reports captured as the scenario unfolds.
+          </p>
+          <div class="splash-actions">
+            <button id="enterAppButton" class="primary splash-primary" type="button">Enter workspace</button>
+            <a href="admin.html" class="ghost header-link">Configure runbooks</a>
+          </div>
+        </section>
+
+        <section class="splash-command-preview" aria-label="Application preview">
+          <div class="preview-topline">
+            <span>Live exercise</span>
+            <strong>00:42:18</strong>
+          </div>
+          <div class="preview-status-row">
+            <div>
+              <span>Runbook</span>
+              <strong>Ransomware Response</strong>
+            </div>
+            <div>
+              <span>Status</span>
+              <strong>Active</strong>
+            </div>
+          </div>
+          <div class="preview-timeline">
+            <div class="preview-event complete">
+              <span>Detection</span>
+              <strong>Endpoint alert triaged</strong>
+            </div>
+            <div class="preview-event active">
+              <span>Containment</span>
+              <strong>Backup access under review</strong>
+            </div>
+            <div class="preview-event">
+              <span>Recovery</span>
+              <strong>Restore approval pending</strong>
+            </div>
+          </div>
+          <div class="preview-evidence">
+            <span>Evidence captured</span>
+            <strong>12 artifacts</strong>
+          </div>
+        </section>
+      </main>
+
+      <footer class="splash-proof">
+        <div><strong>Scenario driven</strong><span>Reveal events in controlled sequence</span></div>
+        <div><strong>Evidence first</strong><span>Tie actions and notes to scenario events</span></div>
+        <div><strong>Report ready</strong><span>Produce timeline and SOC 2 support</span></div>
+      </footer>
+    </section>
+
+    <div id="authGate" class="auth-gate" hidden>
+      <section class="auth-card">
+        <img src="assets/built-on-white.png" alt="Bedroc" />
+        <p class="eyebrow">Employee access</p>
+        <h1>Sign in with Microsoft</h1>
+        <p>Use your Bedroc Microsoft Entra ID account to access the SOC 2 tabletop workspace.</p>
+        <button id="signInButton" class="primary">Sign in</button>
+        <p id="authGateMessage" class="helper-text"></p>
+      </section>
+    </div>
+
+    <header id="appHeader" class="app-header" hidden>
+      <div class="brand-lockup">
+        <img src="assets/built-on-white.png" alt="Bedroc" />
+        <div>
+          <p class="eyebrow">SOC 2 tabletop workspace</p>
+          <h1 id="appTitle">Ransomware Incident Exercise</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="admin.html" class="ghost icon-button header-link" aria-label="Runbook admin" title="Runbook admin">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"></path>
+            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2.05 2.05 0 0 1-2.9 2.9l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21a2.05 2.05 0 0 1-4.1 0v-.08A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2.05 2.05 0 0 1-2.9-2.9l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3a2.05 2.05 0 0 1 0-4.1h.08A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2.05 2.05 0 0 1 2.9-2.9l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3a2.05 2.05 0 0 1 4.1 0v.08A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2.05 2.05 0 0 1 2.9 2.9l-.06.06A1.7 1.7 0 0 0 19.4 9c.15.38.37.72.66 1 .3.28.68.43 1.1.43H21a2.05 2.05 0 0 1 0 4.1h-.08a1.7 1.7 0 0 0-1.52.47Z"></path>
+          </svg>
+        </a>
+        <button id="saveScenario" class="ghost">Save JSON</button>
+        <button id="loadScenario" class="ghost">Load JSON</button>
+        <input id="loadScenarioFile" class="file-input" type="file" accept="application/json,.json" />
+        <button id="resetExercise" class="ghost">Reset</button>
+        <div id="userBadge" class="user-badge" hidden>
+          <span id="userName">Signed in</span>
+          <button id="signOutButton" class="ghost">Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="exercisePage" class="layout" hidden>
+      <aside class="side-panel">
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Exercise Setup</h2>
+            <span id="exerciseStatus" class="status-pill">Draft</span>
+          </div>
+          <label>
+            Exercise name
+            <input id="exerciseName" type="text" value="Bedroc Ransomware Response Tabletop" />
+          </label>
+          <label>
+            Facilitator
+            <input id="facilitator" type="text" placeholder="Name" />
+          </label>
+          <label>
+            Date
+            <input id="exerciseDate" type="date" />
+          </label>
+          <label>
+            Objective
+            <textarea id="objective" rows="4">Validate ransomware detection, escalation, containment, communication, backup recovery, and SOC 2 evidence capture.</textarea>
+          </label>
+          <label>
+            Runbook
+            <select id="runbookSelect"></select>
+          </label>
+          <p id="selectedRunbookMeta" class="helper-text"></p>
+          <button id="startExercise" class="primary full">Start exercise</button>
+          <div id="completionPanel" class="completion-panel" hidden>
+            <strong>Ready to complete</strong>
+            <span id="completionPanelMessage">All scenario events have been revealed. Review decisions, evidence, and actions before closing the exercise.</span>
+            <button id="completeExercise" class="primary full" type="button">Complete exercise</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Participants</h2>
+            <span id="participantCount" class="count">0</span>
+          </div>
+          <div class="inline-form">
+            <input id="editingParticipantIndex" type="hidden" value="" />
+            <input id="participantName" type="text" placeholder="Name" />
+            <select id="participantRole">
+              <option>Incident Commander</option>
+              <option>Security</option>
+              <option>IT Operations</option>
+              <option>Engineering</option>
+              <option>Legal</option>
+              <option>Compliance</option>
+              <option>Customer Success</option>
+              <option>Executive</option>
+            </select>
+            <button id="addParticipant">Add</button>
+            <button id="cancelParticipantEdit" class="ghost" type="button" hidden>Cancel</button>
+          </div>
+          <ul id="participantList" class="compact-list"></ul>
+        </section>
+
+        <section class="panel">
+          <h2>Control Coverage</h2>
+          <div id="controlCoverage" class="coverage-list"></div>
+        </section>
+      </aside>
+
+      <section class="exercise-board">
+        <nav class="tabs" aria-label="Exercise sections">
+          <button class="tab active" data-tab="runbook">Runbook</button>
+          <button class="tab" data-tab="evidence">Evidence</button>
+          <button class="tab" data-tab="actions">Actions</button>
+          <button class="tab" data-tab="timeline">Timeline</button>
+          <button class="tab" data-tab="report">Report</button>
+        </nav>
+
+        <section id="runbook" class="tab-panel active">
+          <div class="board-header">
+            <div>
+              <p class="eyebrow">Facilitator timeline</p>
+              <h2>Scenario Events</h2>
+            </div>
+            <div class="timer-box">
+              <span>Elapsed</span>
+              <strong id="elapsedTime">00:00</strong>
+            </div>
+          </div>
+          <div id="injectList" class="inject-list"></div>
+        </section>
+
+        <section id="timeline" class="tab-panel">
+          <header id="timelinePrintHeader" class="timeline-print-header" aria-hidden="true"></header>
+          <div class="board-header">
+            <div>
+              <p class="eyebrow">Incident flow</p>
+              <h2>Timeline</h2>
+            </div>
+            <div class="timeline-header-actions">
+              <button id="printTimeline" class="ghost">Print PDF</button>
+              <div class="timer-box">
+                <span>Events</span>
+                <strong id="timelineCount">0</strong>
+              </div>
+            </div>
+          </div>
+          <div id="timelineSummary" class="timeline-summary"></div>
+          <div id="timelineList" class="timeline-list"></div>
+        </section>
+
+        <section id="evidence" class="tab-panel">
+          <div class="board-header">
+            <div>
+              <p class="eyebrow">Audit trail</p>
+              <h2>Decision and Evidence Log</h2>
+            </div>
+            <button id="addManualEvidence" class="ghost">Add note</button>
+          </div>
+          <form id="decisionForm" class="decision-form">
+            <input id="editingEvidenceIndex" type="hidden" value="" />
+            <input id="decisionRelatedEventIndex" type="hidden" value="" />
+            <input id="decisionRelatedEventTitle" type="hidden" value="" />
+            <label>
+              Related scenario event
+              <select id="decisionRelatedEventSelect"></select>
+            </label>
+            <label>
+              Decision or observation
+              <textarea id="decisionText" rows="3" placeholder="What did the team decide, discover, or escalate?"></textarea>
+            </label>
+            <div class="form-grid">
+              <label>
+                Owner
+                <select id="decisionOwner"></select>
+              </label>
+              <label>
+                Control area
+                <select id="decisionControl"></select>
+              </label>
+              <label>
+                Evidence referenced
+                <input id="decisionEvidence" type="text" placeholder="IR plan, ticket, policy, backup log..." />
+              </label>
+            </div>
+            <div class="form-actions">
+              <button id="cancelEvidenceEdit" class="ghost" type="button" hidden>Cancel edit</button>
+              <button id="saveEvidenceButton" class="primary">Log evidence</button>
+            </div>
+          </form>
+          <div id="evidenceLog" class="log-list"></div>
+        </section>
+
+        <section id="actions" class="tab-panel">
+          <div class="board-header">
+            <div>
+              <p class="eyebrow">Remediation</p>
+              <h2>Action Tracker</h2>
+            </div>
+          </div>
+          <form id="actionForm" class="decision-form">
+            <input id="actionRelatedEventIndex" type="hidden" value="" />
+            <input id="actionRelatedEventTitle" type="hidden" value="" />
+            <label>
+              Related scenario event
+              <select id="actionRelatedEventSelect"></select>
+            </label>
+            <div class="form-grid">
+              <label>
+                Gap or follow-up
+                <input id="actionTitle" type="text" placeholder="Example: clarify legal notification threshold" />
+              </label>
+              <label>
+                Owner
+                <select id="actionOwner"></select>
+              </label>
+              <label>
+                Due date
+                <input id="actionDue" type="date" />
+              </label>
+            </div>
+            <button class="primary">Add action</button>
+          </form>
+          <div id="actionList" class="action-list"></div>
+        </section>
+
+        <section id="report" class="tab-panel">
+          <div class="board-header">
+            <div>
+              <p class="eyebrow">SOC 2 artifact</p>
+              <h2>Exercise Report</h2>
+            </div>
+            <div class="report-actions">
+              <button id="regenerateReport" class="ghost">Regenerate</button>
+              <button id="copyReport" class="ghost">Copy report</button>
+              <button id="printReport" class="primary">Print PDF</button>
+            </div>
+          </div>
+          <div class="editor-toolbar" aria-label="Report formatting controls">
+            <select id="reportBlockFormat" title="Text style">
+              <option value="P">Paragraph</option>
+              <option value="H1">Heading 1</option>
+              <option value="H2">Heading 2</option>
+              <option value="H3">Heading 3</option>
+            </select>
+            <button class="editor-command" data-command="bold" type="button" title="Bold"><strong>B</strong></button>
+            <button class="editor-command" data-command="italic" type="button" title="Italic"><em>I</em></button>
+            <button class="editor-command" data-command="underline" type="button" title="Underline"><u>U</u></button>
+            <button class="editor-command" data-command="insertUnorderedList" type="button" title="Bulleted list">&bull; List</button>
+            <button class="editor-command" data-command="insertOrderedList" type="button" title="Numbered list">1. List</button>
+            <button class="editor-command" data-command="undo" type="button" title="Undo">Undo</button>
+            <button class="editor-command" data-command="redo" type="button" title="Redo">Redo</button>
+          </div>
+          <article id="reportDocument" class="report-output rich-editor" contenteditable="true" spellcheck="true" aria-label="Editable exercise report"></article>
+        </section>
+      </section>
+    </main>
+
+    <template id="injectTemplate">
+      <article class="inject-card">
+        <div class="inject-topline">
+          <span class="inject-time"></span>
+          <span class="inject-phase"></span>
+        </div>
+        <h3></h3>
+        <p class="inject-summary"></p>
+        <div class="prompt-box"></div>
+        <div class="control-tags"></div>
+        <div class="inject-actions">
+          <button class="reveal-button">Reveal</button>
+          <button class="decision-button ghost">Log decision</button>
+          <button class="gap-button ghost">Create action</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
