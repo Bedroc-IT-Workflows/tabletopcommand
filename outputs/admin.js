@@ -149,11 +149,13 @@ const appSettingsStorageKey = "soc2-tabletop-app-settings";
 const runbookSchema = "bedroc-soc2-tabletop-runbook/v1";
 const defaultAppLogoSource = "assets/built-on-white.png";
 const defaultDocumentLogoSource = "assets/bedroc-logo-grey.png";
+const defaultFaviconSource = "assets/bedroc-logo-grey2.png";
 const defaultAppSettings = {
   organizationName: "Bedroc",
   logoDataUrl: "",
   appLogoDataUrl: "",
   documentLogoDataUrl: "",
+  faviconDataUrl: "",
   paletteId: "bedroc",
   customPalette: {
     bg: "#f2f0ea",
@@ -318,8 +320,10 @@ function bindEvents() {
   });
   $("#appLogoUpload").addEventListener("change", (event) => importLogoFile(event, "app"));
   $("#documentLogoUpload").addEventListener("change", (event) => importLogoFile(event, "document"));
+  $("#faviconUpload").addEventListener("change", (event) => importLogoFile(event, "favicon"));
   $("#resetAppLogo").addEventListener("click", () => resetLogo("app"));
   $("#resetDocumentLogo").addEventListener("click", () => resetLogo("document"));
+  $("#resetFavicon").addEventListener("click", () => resetLogo("favicon"));
   $("#saveExerciseSettings").addEventListener("click", saveExerciseSettings);
   $("#saveExerciseSettingsTop").addEventListener("click", saveExerciseSettings);
 
@@ -391,6 +395,7 @@ function normalizeAppSettings(settings) {
     logoDataUrl: settings?.logoDataUrl || "",
     appLogoDataUrl: settings?.appLogoDataUrl || "",
     documentLogoDataUrl: settings?.documentLogoDataUrl || settings?.logoDataUrl || "",
+    faviconDataUrl: settings?.faviconDataUrl || "",
     paletteId: settings?.paletteId === "custom" || colorPalettes[settings?.paletteId] ? settings.paletteId : defaultAppSettings.paletteId,
     customPalette: normalizeCustomPalette(settings?.customPalette),
     requireEvidenceBeforeCompletion: settings?.requireEvidenceBeforeCompletion !== false,
@@ -419,10 +424,12 @@ function renderAppSettings() {
 function renderLogoPreview() {
   $("#appLogoPreview").src = getAppLogoSource();
   $("#documentLogoPreview").src = getDocumentLogoSource();
+  $("#faviconPreview").src = getFaviconSource();
 }
 
 function renderAdminBranding() {
   const logoSrc = getAppLogoSource();
+  applyFavicon();
   document.querySelectorAll(".brand-lockup img").forEach((image) => {
     image.src = logoSrc;
     image.alt = appSettings.organizationName || defaultAppSettings.organizationName;
@@ -435,6 +442,18 @@ function getAppLogoSource() {
 
 function getDocumentLogoSource() {
   return appSettings.documentLogoDataUrl || appSettings.logoDataUrl || defaultDocumentLogoSource;
+}
+
+function getFaviconSource() {
+  return appSettings.faviconDataUrl || defaultFaviconSource;
+}
+
+function applyFavicon() {
+  const favicon = document.querySelector("link[rel='icon']") || document.createElement("link");
+  favicon.rel = "icon";
+  favicon.type = "image/png";
+  favicon.href = getFaviconSource();
+  if (!favicon.parentElement) document.head.appendChild(favicon);
 }
 
 function populatePaletteSelect() {
@@ -601,8 +620,9 @@ function importLogoFile(event, logoType) {
   const [file] = event.target.files;
   if (!file) return;
 
-  if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
-    alert("Choose a PNG, JPEG, or WebP image for the logo.");
+  const allowedTypes = ["", "image/png", "image/jpeg", "image/webp", "image/x-icon", "image/vnd.microsoft.icon"];
+  if (!allowedTypes.includes(file.type)) {
+    alert("Choose a PNG, JPEG, WebP, or ICO image.");
     event.target.value = "";
     return;
   }
@@ -611,14 +631,16 @@ function importLogoFile(event, logoType) {
   reader.addEventListener("load", () => {
     if (logoType === "app") {
       appSettings.appLogoDataUrl = reader.result;
-    } else {
+    } else if (logoType === "document") {
       appSettings.documentLogoDataUrl = reader.result;
       appSettings.logoDataUrl = "";
+    } else {
+      appSettings.faviconDataUrl = reader.result;
     }
     persistAppSettings();
     renderLogoPreview();
     renderAdminBranding();
-    $("#brandingSettingsNotice").textContent = `${logoType === "app" ? "App header" : "Document"} logo uploaded and saved.`;
+    $("#brandingSettingsNotice").textContent = `${getLogoTypeLabel(logoType)} uploaded and saved.`;
     event.target.value = "";
   });
   reader.readAsDataURL(file);
@@ -627,14 +649,22 @@ function importLogoFile(event, logoType) {
 function resetLogo(logoType) {
   if (logoType === "app") {
     appSettings.appLogoDataUrl = "";
-  } else {
+  } else if (logoType === "document") {
     appSettings.documentLogoDataUrl = "";
     appSettings.logoDataUrl = "";
+  } else {
+    appSettings.faviconDataUrl = "";
   }
   persistAppSettings();
   renderLogoPreview();
   renderAdminBranding();
-  $("#brandingSettingsNotice").textContent = `Default ${logoType === "app" ? "app" : "document"} logo restored.`;
+  $("#brandingSettingsNotice").textContent = `Default ${getLogoTypeLabel(logoType).toLowerCase()} restored.`;
+}
+
+function getLogoTypeLabel(logoType) {
+  if (logoType === "app") return "App header logo";
+  if (logoType === "document") return "Document logo";
+  return "Favicon";
 }
 
 function populateRunbookControlOptions() {

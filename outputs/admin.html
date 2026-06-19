@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Administration | Tabletop Command</title>
+    <link rel="icon" type="image/png" href="assets/bedroc-logo-grey2.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -161,6 +162,10 @@
               Report and timeline logo
               <input id="documentLogoUpload" type="file" accept="image/png,image/jpeg,image/webp" />
             </label>
+            <label>
+              Browser favicon
+              <input id="faviconUpload" type="file" accept="image/png,image/jpeg,image/webp,image/x-icon,.ico" />
+            </label>
           </div>
           <div id="palettePreview" class="palette-preview" aria-label="Selected color palette preview"></div>
           <div id="customPaletteFields" class="custom-palette-fields" hidden>
@@ -210,6 +215,18 @@
               <p class="helper-text">Used in generated reports and timeline PDFs.</p>
               <div class="admin-actions">
                 <button id="resetDocumentLogo" type="button">Use default document logo</button>
+              </div>
+            </div>
+          </div>
+          <div class="logo-preview-row">
+            <div class="logo-preview-box favicon-preview-box">
+              <img id="faviconPreview" src="assets/bedroc-logo-grey2.png" alt="Browser favicon preview" />
+            </div>
+            <div>
+              <h3>Browser favicon</h3>
+              <p class="helper-text">Used in browser tabs and bookmarks for the exercise and admin pages.</p>
+              <div class="admin-actions">
+                <button id="resetFavicon" type="button">Use default favicon</button>
               </div>
             </div>
           </div>

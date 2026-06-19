@@ -177,11 +177,13 @@ const appSettingsStorageKey = "soc2-tabletop-app-settings";
 const splashEnteredStorageKey = "soc2-tabletop-splash-entered";
 const defaultAppLogoSource = "assets/built-on-white.png";
 const defaultDocumentLogoSource = "assets/bedroc-logo-grey.png";
+const defaultFaviconSource = "assets/bedroc-logo-grey2.png";
 const defaultAppSettings = {
   organizationName: "Bedroc",
   logoDataUrl: "",
   appLogoDataUrl: "",
   documentLogoDataUrl: "",
+  faviconDataUrl: "",
   paletteId: "bedroc",
   customPalette: {
     bg: "#f2f0ea",
@@ -564,6 +566,7 @@ function normalizeAppSettings(settings) {
     logoDataUrl: settings?.logoDataUrl || "",
     appLogoDataUrl: settings?.appLogoDataUrl || "",
     documentLogoDataUrl: settings?.documentLogoDataUrl || settings?.logoDataUrl || "",
+    faviconDataUrl: settings?.faviconDataUrl || "",
     paletteId: settings?.paletteId === "custom" || colorPalettes[settings?.paletteId] ? settings.paletteId : defaultAppSettings.paletteId,
     customPalette: normalizeCustomPalette(settings?.customPalette),
     requireEvidenceBeforeCompletion: settings?.requireEvidenceBeforeCompletion !== false,
@@ -1262,10 +1265,19 @@ function renderBranding() {
   const organizationName = getOrganizationName();
   const logoSrc = getAppLogoSource();
   applyColorPalette();
+  applyFavicon();
   document.querySelectorAll(".brand-lockup img, .auth-card img, .splash-nav img").forEach((image) => {
     image.src = logoSrc;
     image.alt = organizationName;
   });
+}
+
+function applyFavicon() {
+  const favicon = document.querySelector("link[rel='icon']") || document.createElement("link");
+  favicon.rel = "icon";
+  favicon.type = "image/png";
+  favicon.href = getFaviconSource();
+  if (!favicon.parentElement) document.head.appendChild(favicon);
 }
 
 function applyColorPalette() {
@@ -1911,6 +1923,10 @@ function getAppLogoSource() {
 
 function getDocumentLogoSource() {
   return appSettings.documentLogoDataUrl || appSettings.logoDataUrl || defaultDocumentLogoSource;
+}
+
+function getFaviconSource() {
+  return appSettings.faviconDataUrl || defaultFaviconSource;
 }
 
 function isParticipantEnteredEvidence(entry) {

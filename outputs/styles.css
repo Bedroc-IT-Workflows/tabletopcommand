@@ -1344,6 +1344,11 @@ textarea {
   object-fit: contain;
 }
 
+.favicon-preview-box img {
+  width: 48px;
+  height: 48px;
+}
+
 .inline-footer {
   margin: 4px -22px -22px;
 }
