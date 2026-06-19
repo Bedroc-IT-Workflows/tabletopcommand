@@ -1,14 +1,14 @@
 {
   "routes": [
     {
-      "route": "/admin.html",
+      "route": "/*",
       "allowedRoles": ["authenticated"]
     }
   ],
   "responseOverrides": {
     "401": {
       "statusCode": 302,
-      "redirect": "/"
+      "redirect": "/.auth/login/aad"
     }
   },
   "globalHeaders": {
