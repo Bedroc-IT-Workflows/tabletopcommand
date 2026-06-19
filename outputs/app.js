@@ -339,6 +339,8 @@ function syncAppSettingsFromStorage() {
 }
 
 function bindEvents() {
+  bindHeaderMenu();
+
   document.querySelectorAll(".tab").forEach((tab) => {
     tab.addEventListener("click", () => activateTab(tab.dataset.tab));
   });
@@ -447,6 +449,42 @@ function bindEvents() {
     });
   });
 
+}
+
+function bindHeaderMenu() {
+  const menuButton = $("#headerMenuButton");
+  const headerActions = $("#headerActions");
+  if (!menuButton || !headerActions) return;
+
+  menuButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    setHeaderMenuOpen(menuButton.getAttribute("aria-expanded") !== "true");
+  });
+
+  headerActions.addEventListener("click", (event) => {
+    const actionable = event.target.closest("button, a");
+    if (actionable && actionable.id !== "loadScenario") setHeaderMenuOpen(false);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!headerActions.classList.contains("open")) return;
+    if ($("#appHeader").contains(event.target)) return;
+    setHeaderMenuOpen(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setHeaderMenuOpen(false);
+  });
+}
+
+function setHeaderMenuOpen(isOpen) {
+  const menuButton = $("#headerMenuButton");
+  const headerActions = $("#headerActions");
+  if (!menuButton || !headerActions) return;
+
+  headerActions.classList.toggle("open", isOpen);
+  menuButton.setAttribute("aria-expanded", String(isOpen));
+  menuButton.setAttribute("aria-label", isOpen ? "Close app menu" : "Open app menu");
 }
 
 async function initializeAuth() {

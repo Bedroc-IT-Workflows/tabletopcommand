@@ -534,6 +534,22 @@ h3 {
   gap: 10px;
 }
 
+.header-menu-button {
+  display: none;
+}
+
+.header-menu-button span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.menu-text {
+  display: none;
+}
+
 .report-actions {
   display: flex;
   flex-wrap: wrap;
@@ -1544,14 +1560,12 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  .app-header,
   .board-header,
   .panel-heading {
     align-items: flex-start;
     flex-direction: column;
   }
 
-  .header-actions,
   .report-actions,
   .timeline-header-actions,
   .tabs,
@@ -1561,7 +1575,6 @@ textarea {
   }
 
   .tab,
-  .header-actions button,
   .report-actions button,
   .timeline-header-actions button,
   .inject-actions button {
@@ -1635,15 +1648,15 @@ textarea {
   }
 
   .app-header {
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 10;
-    gap: 12px;
-    padding: 12px;
+    gap: 10px;
+    padding: 10px 12px;
   }
 
   .brand-lockup {
-    width: 100%;
+    flex: 1;
+    width: auto;
     gap: 12px;
   }
 
@@ -1662,23 +1675,67 @@ textarea {
     font-size: 10px;
   }
 
+  .header-menu-button {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    width: 42px;
+    height: 42px;
+    min-height: 42px;
+    padding: 0;
+  }
+
   .header-actions {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 12px;
+    z-index: 30;
+    display: none;
+    width: min(280px, calc(100vw - 24px));
+    border: 1px solid rgba(245, 242, 234, 0.24);
+    border-radius: 8px;
+    padding: 10px;
+    background: var(--ink);
+    box-shadow: 0 18px 46px rgba(7, 7, 6, 0.34);
+  }
+
+  .header-actions.open {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: 100%;
+    grid-template-columns: 1fr;
     gap: 8px;
   }
 
+  .header-actions button,
+  .header-actions .header-link,
   .header-actions .icon-button {
     width: 100%;
+    justify-content: center;
+  }
+
+  .header-actions .icon-button {
+    gap: 8px;
+  }
+
+  .menu-text {
+    display: inline;
   }
 
   .user-badge {
-    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
     justify-content: space-between;
     border-left: 0;
     border-top: 1px solid rgba(245, 242, 234, 0.18);
-    padding: 8px 0 0;
+    padding: 10px 0 0;
+  }
+
+  .user-badge span {
+    max-width: none;
+    text-align: center;
   }
 
   .layout {
