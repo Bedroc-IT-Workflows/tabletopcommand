@@ -576,8 +576,8 @@ h3 {
   display: flex;
   align-items: center;
   gap: 8px;
-  border-left: 1px solid rgba(245, 242, 234, 0.18);
-  padding-left: 10px;
+  border-right: 1px solid rgba(245, 242, 234, 0.18);
+  padding-right: 10px;
 }
 
 .user-badge[hidden] {

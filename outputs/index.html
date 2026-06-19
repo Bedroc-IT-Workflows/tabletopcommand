@@ -25,7 +25,6 @@
 
       <header class="splash-nav">
         <img src="assets/built-on-white.png" alt="Bedroc" />
-        <a href="admin.html" class="ghost header-link">Administration</a>
       </header>
 
       <main class="splash-hero">
@@ -37,7 +36,6 @@
           </p>
           <div class="splash-actions">
             <button id="enterAppButton" class="primary splash-primary" type="button">Enter workspace</button>
-            <a href="admin.html" class="ghost header-link">Configure runbooks</a>
           </div>
         </section>
 
@@ -117,6 +115,10 @@
         <span aria-hidden="true"></span>
       </button>
       <div id="headerActions" class="header-actions">
+        <div id="userBadge" class="user-badge" hidden>
+          <span id="userName">Signed in</span>
+          <button id="signOutButton" class="ghost">Sign out</button>
+        </div>
         <a href="admin.html" class="ghost icon-button header-link" aria-label="Runbook admin" title="Runbook admin">
           <svg aria-hidden="true" viewBox="0 0 24 24">
             <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"></path>
@@ -128,10 +130,6 @@
         <button id="loadScenario" class="ghost">Load JSON</button>
         <input id="loadScenarioFile" class="file-input" type="file" accept="application/json,.json" />
         <button id="resetExercise" class="ghost">Reset</button>
-        <div id="userBadge" class="user-badge" hidden>
-          <span id="userName">Signed in</span>
-          <button id="signOutButton" class="ghost">Sign out</button>
-        </div>
       </div>
     </header>
 
