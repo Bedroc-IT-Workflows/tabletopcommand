@@ -428,6 +428,56 @@ button:disabled {
   line-height: 1.5;
 }
 
+.microsoft-sign-in {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 6px;
+  border-color: #f5f2ea;
+  color: #201f1c;
+  background: #fff;
+  font-weight: 700;
+}
+
+.microsoft-sign-in:hover {
+  border-color: #d8d0c2;
+  background: #f5f2ea;
+}
+
+.microsoft-sign-in:disabled {
+  opacity: 0.82;
+}
+
+.microsoft-mark {
+  display: grid;
+  grid-template-columns: repeat(2, 10px);
+  gap: 2px;
+}
+
+.microsoft-mark span {
+  width: 10px;
+  height: 10px;
+}
+
+.microsoft-mark span:nth-child(1) {
+  background: #f25022;
+}
+
+.microsoft-mark span:nth-child(2) {
+  background: #7fba00;
+}
+
+.microsoft-mark span:nth-child(3) {
+  background: #00a4ef;
+}
+
+.microsoft-mark span:nth-child(4) {
+  background: #ffb900;
+}
+
 .brand-lockup {
   display: flex;
   align-items: center;
@@ -1515,6 +1565,342 @@ textarea {
 
   .layout {
     padding: 12px;
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    background: var(--bg);
+  }
+
+  button,
+  .header-link {
+    min-height: 42px;
+  }
+
+  input,
+  select,
+  textarea {
+    min-height: 42px;
+    font-size: 16px;
+  }
+
+  .splash-page {
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .splash-nav {
+    padding: 18px;
+  }
+
+  .splash-nav img {
+    width: 116px;
+    height: 52px;
+  }
+
+  .splash-hero {
+    width: 100%;
+    gap: 22px;
+    padding: 8px 18px 20px;
+  }
+
+  .splash-copy h1 {
+    font-size: 42px;
+    line-height: 1.02;
+  }
+
+  .splash-lede {
+    font-size: 15px;
+  }
+
+  .splash-command-preview {
+    padding: 16px;
+  }
+
+  .splash-proof {
+    position: relative;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 0 18px 18px;
+  }
+
+  .splash-proof div {
+    padding: 12px;
+  }
+
+  .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .brand-lockup {
+    width: 100%;
+    gap: 12px;
+  }
+
+  .brand-lockup img {
+    width: 82px;
+    height: 42px;
+    padding-right: 12px;
+  }
+
+  .app-header h1 {
+    font-size: 20px;
+    line-height: 1.15;
+  }
+
+  .app-header .eyebrow {
+    font-size: 10px;
+  }
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 8px;
+  }
+
+  .header-actions .icon-button {
+    width: 100%;
+  }
+
+  .user-badge {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    border-left: 0;
+    border-top: 1px solid rgba(245, 242, 234, 0.18);
+    padding: 8px 0 0;
+  }
+
+  .layout {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .side-panel {
+    gap: 12px;
+  }
+
+  .panel,
+  .tab-panel {
+    padding: 14px;
+  }
+
+  .panel h2,
+  .board-header h2 {
+    margin-bottom: 0;
+    font-size: 17px;
+  }
+
+  .exercise-board {
+    border-radius: 8px;
+  }
+
+  .tabs {
+    position: relative;
+    z-index: 3;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 10px;
+    scrollbar-width: thin;
+  }
+
+  .tab {
+    flex: 0 0 auto;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .board-header {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .timer-box {
+    min-width: 0;
+    width: 100%;
+    text-align: left;
+  }
+
+  .inline-form,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions,
+  .inject-actions,
+  .report-actions,
+  .timeline-header-actions,
+  .admin-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .decision-form {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .inject-card,
+  .compact-item,
+  .coverage-item,
+  .log-item,
+  .action-item {
+    padding: 12px;
+  }
+
+  .inject-topline,
+  .timeline-topline,
+  .compact-item {
+    align-items: flex-start;
+    grid-template-columns: 1fr;
+  }
+
+  .control-tags {
+    margin-bottom: 10px;
+  }
+
+  .timeline-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .timeline-list {
+    gap: 12px;
+    padding-left: 18px;
+  }
+
+  .timeline-list::before {
+    left: 5px;
+  }
+
+  .timeline-item {
+    grid-template-columns: 12px minmax(0, 1fr);
+    gap: 10px;
+    margin-left: -18px;
+  }
+
+  .timeline-marker {
+    width: 12px;
+    height: 12px;
+    margin-top: 18px;
+    border-width: 2px;
+  }
+
+  .timeline-content {
+    padding: 12px;
+  }
+
+  .editor-toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    border-radius: 8px;
+    padding: 8px;
+    scrollbar-width: thin;
+  }
+
+  .editor-toolbar select,
+  .editor-toolbar button {
+    flex: 0 0 auto;
+  }
+
+  .report-output {
+    max-width: none;
+    min-height: 520px;
+    padding: 18px;
+    font-size: 15px;
+    box-shadow: none;
+  }
+
+  .report-cover {
+    min-height: 0;
+    padding-right: 0;
+  }
+
+  .report-logo {
+    position: static;
+    display: block;
+    width: 104px;
+    height: 52px;
+    margin-bottom: 12px;
+  }
+
+  .report-section {
+    margin-bottom: 18px;
+  }
+
+  .admin-console,
+  .admin-settings-panel,
+  .admin-sidebar,
+  .admin-editor,
+  .admin-placeholder {
+    padding: 14px;
+  }
+
+  .admin-page-header,
+  .admin-page-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .admin-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+
+  .admin-nav-item {
+    flex: 0 0 190px;
+  }
+
+  .logo-preview-row,
+  .custom-palette-fields,
+  .two-column,
+  .event-editor-shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .splash-copy h1 {
+    font-size: 36px;
+  }
+
+  .preview-topline,
+  .timeline-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .app-header h1 {
+    font-size: 18px;
+  }
+
+  .tabs {
+    margin: 0 -1px;
+  }
+
+  .tab-panel {
+    padding: 12px;
+  }
+
+  .panel {
+    padding: 12px;
+  }
+
+  .report-output {
+    padding: 14px;
   }
 }
 

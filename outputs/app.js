@@ -325,6 +325,7 @@ function enterWorkspace() {
 }
 
 function showWorkspace() {
+  $("#authGate").hidden = true;
   $("#splashPage").hidden = true;
   $("#appHeader").hidden = false;
   $("#exercisePage").hidden = false;
@@ -486,6 +487,9 @@ function bindAuthEvents() {
 }
 
 function showAuthGate(message) {
+  $("#splashPage").hidden = true;
+  $("#appHeader").hidden = true;
+  $("#exercisePage").hidden = true;
   $("#authGateMessage").textContent = message;
   $("#authGate").hidden = false;
 }
@@ -497,11 +501,23 @@ function showAuthenticatedUser(name) {
 }
 
 function signIn() {
-  window.location.href = `/.auth/login/aad?post_login_redirect_uri=${encodeURIComponent(window.location.href)}`;
+  const button = $("#signInButton");
+  $("#signInButtonText").textContent = "Redirecting to Microsoft...";
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+  $("#authGateMessage").textContent = "Opening Microsoft sign-in.";
+  window.location.href = `/.auth/login/aad?post_login_redirect_uri=${encodeURIComponent(getPostAuthRedirectUrl())}`;
 }
 
 function signOut() {
-  window.location.href = `/.auth/logout?post_logout_redirect_uri=${encodeURIComponent(window.location.origin)}`;
+  sessionStorage.removeItem(splashEnteredStorageKey);
+  showAuthGate("Signing out...");
+  window.location.href = `/.auth/logout?post_logout_redirect_uri=${encodeURIComponent(getPostAuthRedirectUrl())}`;
+}
+
+function getPostAuthRedirectUrl() {
+  if (window.location.protocol === "file:") return window.location.href;
+  return `${window.location.origin}${window.location.pathname}`;
 }
 
 function loadRunbooks() {

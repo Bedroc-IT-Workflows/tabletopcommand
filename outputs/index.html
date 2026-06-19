@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <section id="splashPage" class="splash-page" aria-labelledby="splashTitle">
+    <section id="splashPage" class="splash-page" aria-labelledby="splashTitle" hidden>
       <div class="splash-backdrop" aria-hidden="true">
         <div class="splash-signal-grid">
           <span></span>
@@ -86,10 +86,18 @@
     <div id="authGate" class="auth-gate" hidden>
       <section class="auth-card">
         <img src="assets/built-on-white.png" alt="Bedroc" />
-        <p class="eyebrow">Employee access</p>
-        <h1>Sign in with Microsoft</h1>
-        <p>Use your Bedroc Microsoft Entra ID account to access the SOC 2 tabletop workspace.</p>
-        <button id="signInButton" class="primary">Sign in</button>
+        <p class="eyebrow">Bedroc employee access</p>
+        <h1>Tabletop Command</h1>
+        <p>Sign in with your Microsoft Entra ID account to open the SOC 2 tabletop workspace.</p>
+        <button id="signInButton" class="microsoft-sign-in" type="button">
+          <span class="microsoft-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <span id="signInButtonText">Sign in with Microsoft</span>
+        </button>
         <p id="authGateMessage" class="helper-text"></p>
       </section>
     </div>
