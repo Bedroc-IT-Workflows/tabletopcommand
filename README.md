@@ -11,7 +11,7 @@ The deployable static app is in:
 For Azure Static Web Apps, use these build settings:
 
 - App location: `outputs`
-- API location: `api`
+- API location: leave blank
 - Output location: leave blank
 
 ## Local Use
