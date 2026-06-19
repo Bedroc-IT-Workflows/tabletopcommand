@@ -4,11 +4,12 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
         {
             "type": "chrome",
             "request": "launch",
             "name": "Open index.html",
-            "url": "file:///c%3A/Users/PrestonWills/Documents/Codex/2026-06-15/tabletopcommand/outputs/index.html"
+            "url": "file:///c%3A/Users/PrestonWills/OneDrive - BEDROC/Codex/tabletopcommand/outputs/index.html"
         }
     ]
 }
