@@ -26,6 +26,7 @@ Use the equivalent hostname for your deployed app.
 - Opened locally as a file: the app runs in local development mode because Azure `/.auth` endpoints do not exist.
 - No client secret is stored in this app.
 - The app calls `/.auth/me` only to display the signed-in user.
+- The app calls `/api/user-photo` to request the signed-in user's Microsoft profile photo from Microsoft Graph. If Azure does not provide an Entra access token, Graph permissions are not consented, or the user has no profile photo, the UI falls back to initials.
 
 ## Future Role Model
 

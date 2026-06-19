@@ -178,6 +178,7 @@ const splashEnteredStorageKey = "soc2-tabletop-splash-entered";
 const defaultAppLogoSource = "assets/built-on-white.png";
 const defaultDocumentLogoSource = "assets/bedroc-logo-grey.png";
 const defaultFaviconSource = "assets/bedroc-logo-grey2.png";
+const userPhotoEndpoint = "/api/user-photo";
 const defaultAppSettings = {
   organizationName: "Bedroc",
   logoDataUrl: "",
@@ -286,6 +287,7 @@ const colorPalettes = {
 
 const $ = (selector) => document.querySelector(selector);
 let appSettings = { ...defaultAppSettings };
+let userAvatarObjectUrl = "";
 
 async function init() {
   loadAppSettings();
@@ -538,6 +540,8 @@ function showAuthenticatedUser(name) {
   $("#authGate").hidden = true;
   $("#userName").textContent = name;
   $("#userBadge").hidden = false;
+  renderUserAvatar(name);
+  loadUserAvatarPhoto();
 }
 
 function signIn() {
@@ -550,9 +554,57 @@ function signIn() {
 }
 
 function signOut() {
+  clearUserAvatarObjectUrl();
   sessionStorage.removeItem(splashEnteredStorageKey);
   showAuthGate("Signing out...");
   window.location.href = `/.auth/logout?post_logout_redirect_uri=${encodeURIComponent(getPostAuthRedirectUrl())}`;
+}
+
+function renderUserAvatar(name) {
+  clearUserAvatarObjectUrl();
+  const avatar = $("#userAvatar");
+  if (!avatar) return;
+  avatar.textContent = getInitials(name);
+  avatar.style.backgroundImage = "";
+}
+
+async function loadUserAvatarPhoto() {
+  if (window.location.protocol === "file:") return;
+
+  try {
+    const response = await fetch(userPhotoEndpoint, {
+      credentials: "include",
+      headers: { "Accept": "image/*" }
+    });
+    if (!response.ok || response.status === 204) return;
+
+    const blob = await response.blob();
+    if (!blob.size || !blob.type.startsWith("image/")) return;
+
+    const avatar = $("#userAvatar");
+    if (!avatar) return;
+    clearUserAvatarObjectUrl();
+    userAvatarObjectUrl = URL.createObjectURL(blob);
+    avatar.textContent = "";
+    avatar.style.backgroundImage = `url("${userAvatarObjectUrl}")`;
+  } catch {
+    // Keep the initials fallback when the hosted photo endpoint is unavailable.
+  }
+}
+
+function clearUserAvatarObjectUrl() {
+  if (!userAvatarObjectUrl) return;
+  URL.revokeObjectURL(userAvatarObjectUrl);
+  userAvatarObjectUrl = "";
+}
+
+function getInitials(name) {
+  const parts = String(name || "")
+    .replace(/@.*/, "")
+    .split(/[\s._-]+/)
+    .filter(Boolean);
+  const initials = parts.slice(0, 2).map((part) => part[0]).join("");
+  return initials.toUpperCase() || "U";
 }
 
 function getPostAuthRedirectUrl() {

@@ -584,7 +584,7 @@ h3 {
   display: none;
 }
 
-.user-badge span {
+.user-badge #userName {
   max-width: 180px;
   overflow: hidden;
   color: #d8d0c2;
@@ -592,6 +592,25 @@ h3 {
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.user-avatar {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(245, 242, 234, 0.28);
+  border-radius: 50%;
+  color: #fffaf2;
+  background:
+    linear-gradient(135deg, rgba(185, 138, 69, 0.9), rgba(115, 127, 111, 0.9)),
+    var(--charcoal);
+  background-position: center;
+  background-size: cover;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .layout {
