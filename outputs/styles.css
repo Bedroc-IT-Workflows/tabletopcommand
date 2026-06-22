@@ -2030,6 +2030,23 @@ textarea {
     padding: 0;
   }
 
+  body.print-report .report-cover {
+    position: relative;
+    min-height: 92px;
+    padding-right: 150px;
+  }
+
+  body.print-report .report-logo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 120px;
+    height: 60px;
+    margin: 0;
+    object-fit: contain;
+  }
+
   body.print-timeline .timeline-print-header {
     position: relative;
     display: grid;
