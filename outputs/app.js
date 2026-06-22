@@ -286,6 +286,7 @@ const colorPalettes = {
 
 const $ = (selector) => document.querySelector(selector);
 let appSettings = { ...defaultAppSettings };
+let currentUserName = "Signed in";
 
 async function init() {
   loadAppSettings();
@@ -421,10 +422,15 @@ function bindEvents() {
     resetActionRelatedEvent();
   });
 
+  $("#noteForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    saveNoteFromForm();
+  });
+  $("#cancelNote").addEventListener("click", resetNoteForm);
+
   $("#addManualEvidence").addEventListener("click", () => {
     activateTab("evidence");
-    resetEvidenceForm();
-    $("#decisionRelatedEventSelect").focus();
+    openNoteForm();
   });
   $("#copyReport").addEventListener("click", copyReport);
   $("#regenerateReport").addEventListener("click", regenerateReport);
@@ -536,6 +542,7 @@ function showAuthGate(message) {
 
 function showAuthenticatedUser(name) {
   $("#authGate").hidden = true;
+  currentUserName = name;
   $("#userName").textContent = name;
   $("#userBadge").hidden = false;
 }
@@ -892,6 +899,7 @@ function getSelectedOwner(id) {
 function logEvidence(text, owner, control, evidence, relatedEvent = null) {
   state.evidence.unshift({
     time: new Date().toISOString(),
+    entryType: "evidence",
     text,
     owner,
     control,
@@ -900,6 +908,27 @@ function logEvidence(text, owner, control, evidence, relatedEvent = null) {
     relatedEventTitle: relatedEvent?.title || ""
   });
   persist();
+  renderEvidenceDependentViews();
+}
+
+function logNote(text, relatedEvent) {
+  const event = Number.isInteger(relatedEvent?.index) ? getActiveEvents()[relatedEvent.index] : null;
+  state.evidence.unshift({
+    time: new Date().toISOString(),
+    entryType: "note",
+    text,
+    enteredBy: currentUserName,
+    owner: currentUserName,
+    control: event?.controls?.[0] || "CC7.4",
+    evidence: "Note",
+    relatedEventIndex: relatedEvent?.index ?? null,
+    relatedEventTitle: relatedEvent?.title || ""
+  });
+  persist();
+  renderEvidenceDependentViews();
+}
+
+function renderEvidenceDependentViews() {
   renderEvidence();
   renderTimeline();
   renderCoverage();
@@ -912,13 +941,24 @@ function renderEvidence() {
   state.evidence.forEach((entry, index) => {
     const item = document.createElement("article");
     item.className = "log-item";
-    item.innerHTML = `
-      <strong>${escapeHtml(entry.text)}</strong>
-      <div class="log-meta">
+    const label = getEvidenceEntryLabel(entry);
+    const isNote = normalizeEvidenceEntryType(entry.entryType) === "note";
+    const meta = isNote
+      ? `
+        <span>${formatTime(entry.time)}</span>
+        <span>Entered by: ${escapeHtml(getNoteAuthor(entry))}</span>
+        <span>Related event: ${escapeHtml(getRelatedEventLabel(entry))}</span>
+      `
+      : `
         <span>${formatTime(entry.time)}</span>
         <span>Owner: ${escapeHtml(entry.owner)}</span>
         <span>Control: ${escapeHtml(entry.control)}</span>
         <span>Evidence: ${escapeHtml(entry.evidence)}</span>
+      `;
+    item.innerHTML = `
+      <strong>${escapeHtml(label)}: ${escapeHtml(entry.text)}</strong>
+      <div class="log-meta">
+        ${meta}
       </div>
       <div class="item-actions">
         <button class="edit-evidence icon-action" type="button" aria-label="Edit evidence" title="Edit evidence">
@@ -947,6 +987,10 @@ function renderEvidence() {
 function editEvidence(index) {
   const entry = state.evidence[index];
   if (!entry) return;
+  if (normalizeEvidenceEntryType(entry.entryType) === "note") {
+    editNote(index);
+    return;
+  }
   $("#editingEvidenceIndex").value = index;
   $("#decisionText").value = entry.text;
   populateOwnerPicklists(entry.owner);
@@ -966,6 +1010,7 @@ function updateEvidence(index, text, owner, control, evidence, relatedEvent) {
   state.evidence[index] = {
     ...state.evidence[index],
     editedAt: new Date().toISOString(),
+    entryType: "evidence",
     text,
     owner,
     control,
@@ -974,10 +1019,7 @@ function updateEvidence(index, text, owner, control, evidence, relatedEvent) {
     relatedEventTitle: relatedEvent?.title || ""
   };
   persist();
-  renderEvidence();
-  renderTimeline();
-  renderCoverage();
-  renderReport();
+  renderEvidenceDependentViews();
 }
 
 function deleteEvidence(index) {
@@ -986,11 +1028,9 @@ function deleteEvidence(index) {
   if (!confirm("Delete this evidence entry?")) return;
   state.evidence.splice(index, 1);
   resetEvidenceForm();
+  resetNoteForm();
   persist();
-  renderEvidence();
-  renderTimeline();
-  renderCoverage();
-  renderReport();
+  renderEvidenceDependentViews();
 }
 
 function resetEvidenceForm() {
@@ -1003,6 +1043,130 @@ function resetEvidenceForm() {
   $("#decisionRelatedEventTitle").value = "";
   $("#saveEvidenceButton").textContent = "Log evidence";
   $("#cancelEvidenceEdit").hidden = true;
+}
+
+function normalizeEvidenceEntryType(entryType) {
+  return entryType === "note" ? "note" : "evidence";
+}
+
+function getEvidenceEntryLabel(entry) {
+  return normalizeEvidenceEntryType(entry.entryType) === "note" ? "Note" : "Evidence";
+}
+
+function openNoteForm() {
+  resetEvidenceForm();
+  resetNoteForm();
+  populateNoteRelatedEventPicklist();
+  $("#decisionForm").hidden = true;
+  $("#noteForm").hidden = false;
+  $("#noteRelatedEventSelect").focus();
+}
+
+function saveNoteFromForm() {
+  const text = $("#noteText").value.trim();
+  if (!text) return;
+  const relatedEvent = getNoteRelatedEvent();
+  if (!relatedEvent) {
+    alert("Select the scenario event this note relates to.");
+    return;
+  }
+
+  const editingIndex = $("#editingNoteIndex").value;
+  if (editingIndex !== "") {
+    updateNote(Number(editingIndex), text, relatedEvent);
+  } else {
+    logNote(text, relatedEvent);
+  }
+  resetNoteForm();
+}
+
+function editNote(index) {
+  const entry = state.evidence[index];
+  if (!entry) return;
+  resetEvidenceForm();
+  populateNoteRelatedEventPicklist(getRelatedEventIndex(entry, getActiveEvents()));
+  $("#editingNoteIndex").value = index;
+  $("#noteText").value = entry.text;
+  $("#saveNoteButton").textContent = "Save note";
+  $("#decisionForm").hidden = true;
+  $("#noteForm").hidden = false;
+  $("#noteText").focus();
+}
+
+function updateNote(index, text, relatedEvent) {
+  const entry = state.evidence[index];
+  if (!entry) return;
+  const event = Number.isInteger(relatedEvent?.index) ? getActiveEvents()[relatedEvent.index] : null;
+  state.evidence[index] = {
+    ...entry,
+    editedAt: new Date().toISOString(),
+    entryType: "note",
+    text,
+    enteredBy: entry.enteredBy || currentUserName,
+    owner: entry.owner || entry.enteredBy || currentUserName,
+    control: event?.controls?.[0] || entry.control || "CC7.4",
+    evidence: "Note",
+    relatedEventIndex: relatedEvent?.index ?? null,
+    relatedEventTitle: relatedEvent?.title || ""
+  };
+  persist();
+  renderEvidenceDependentViews();
+}
+
+function resetNoteForm() {
+  $("#noteForm").reset();
+  $("#noteForm").hidden = true;
+  $("#decisionForm").hidden = false;
+  $("#editingNoteIndex").value = "";
+  $("#saveNoteButton").textContent = "Save note";
+  populateNoteRelatedEventPicklist();
+}
+
+function populateNoteRelatedEventPicklist(selectedIndex = "") {
+  const select = $("#noteRelatedEventSelect");
+  if (!select) return;
+  const currentValue = selectedIndex !== "" && selectedIndex !== null && selectedIndex !== undefined ? String(selectedIndex) : select.value;
+  select.innerHTML = "";
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Select scenario event";
+  select.appendChild(placeholder);
+
+  getActiveEvents().forEach((event, index) => {
+    const option = document.createElement("option");
+    option.value = String(index);
+    option.textContent = `T+${event.minute} ${event.title}`;
+    select.appendChild(option);
+  });
+
+  select.value = currentValue;
+}
+
+function getNoteRelatedEvent() {
+  const select = $("#noteRelatedEventSelect");
+  if (!select || select.value === "") return null;
+  const index = Number(select.value);
+  const event = getActiveEvents()[index];
+  if (!event) return null;
+  return { index, title: event.title };
+}
+
+function getNoteAuthor(entry) {
+  return entry.enteredBy || entry.owner || "Unknown";
+}
+
+function getRelatedEventLabel(entry) {
+  const index = getRelatedEventIndex(entry, getActiveEvents());
+  const event = index === null ? null : getActiveEvents()[index];
+  return event ? `T+${event.minute} ${event.title}` : entry.relatedEventTitle || "Not linked";
+}
+
+function getEvidenceReportMeta(entry) {
+  if (normalizeEvidenceEntryType(entry.entryType) === "note") {
+    return `${formatTime(entry.time)} | Entered by: ${getNoteAuthor(entry)} | Related event: ${getRelatedEventLabel(entry)}`;
+  }
+  return `${formatTime(entry.time)} | ${entry.control} | Owner: ${entry.owner} | Evidence: ${entry.evidence}`;
 }
 
 function resetActionRelatedEvent() {
@@ -1178,9 +1342,11 @@ function buildTimelineActivity(evidenceItems, actionItems) {
 
   const activity = [
     ...evidenceItems.map((entry) => ({
-      type: "Evidence",
+      type: getEvidenceEntryLabel(entry),
       time: entry.time,
-      meta: `${formatTime(entry.time)} | ${entry.owner} | ${entry.control}`,
+      meta: normalizeEvidenceEntryType(entry.entryType) === "note"
+        ? `${formatTime(entry.time)} | Entered by: ${getNoteAuthor(entry)}`
+        : `${formatTime(entry.time)} | ${entry.owner} | ${entry.control}`,
       text: entry.text
     })),
     ...actionItems.map((action) => ({
@@ -1436,8 +1602,8 @@ function buildReportHtml() {
     </section>
 
     <section class="report-section">
-      <h2>Decision and Evidence Log</h2>
-      ${buildReportList(state.evidence, (entry) => `<strong>${escapeHtml(entry.text)}</strong><span>${escapeHtml(formatTime(entry.time))} | ${escapeHtml(entry.control)} | Owner: ${escapeHtml(entry.owner)} | Evidence: ${escapeHtml(entry.evidence)}</span>`, "No evidence logged")}
+      <h2>Decision, Notes, and Evidence Log</h2>
+      ${buildReportList(state.evidence, (entry) => `<strong>${escapeHtml(getEvidenceEntryLabel(entry))}: ${escapeHtml(entry.text)}</strong><span>${escapeHtml(getEvidenceReportMeta(entry))}</span>`, "No notes or evidence logged")}
     </section>
 
     <section class="report-section">
@@ -1469,7 +1635,7 @@ function buildReportText() {
   const organizationName = getOrganizationName();
   const participantLines = state.participants.length ? state.participants.map((p) => `- ${p.name} (${p.role})`).join("\n") : "- No participants recorded";
   const eventLines = events.map((event, index) => `- T+${event.minute} ${event.title} [${state.revealed.includes(index) ? "Revealed" : "Not revealed"}] (${event.controls.join(", ")})`).join("\n");
-  const evidenceLines = state.evidence.length ? state.evidence.map((entry) => `- ${formatTime(entry.time)} | ${entry.control} | ${entry.owner} | ${entry.text} | Evidence: ${entry.evidence}`).join("\n") : "- No evidence logged";
+  const evidenceLines = state.evidence.length ? state.evidence.map((entry) => `- ${getEvidenceEntryLabel(entry)} | ${getEvidenceReportMeta(entry)} | ${entry.text}`).join("\n") : "- No notes or evidence logged";
   const actionLines = state.actions.length ? state.actions.map((action) => `- ${action.title} | Owner: ${action.owner} | Due: ${action.due} | Status: ${action.status}`).join("\n") : "- No remediation actions recorded";
   const controlLines = controls.map((control) => `- ${control.id} ${control.name}: ${state.evidence.filter((entry) => entry.control === control.id).length} evidence item(s)`).join("\n");
   return `${name}
@@ -1492,7 +1658,7 @@ ${participantLines}
 Scenario Timeline
 ${eventLines}
 
-Decision and Evidence Log
+Decision, Notes, and Evidence Log
 ${evidenceLines}
 
 SOC 2 Control Coverage
@@ -1968,6 +2134,7 @@ function getFaviconSource() {
 }
 
 function isParticipantEnteredEvidence(entry) {
+  if (normalizeEvidenceEntryType(entry.entryType) === "note") return false;
   return !["Scenario timeline", "Runbook snapshot", "Exercise completion record"].includes(entry.evidence);
 }
 

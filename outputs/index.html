@@ -245,7 +245,7 @@
           <div class="board-header">
             <div>
               <p class="eyebrow">Audit trail</p>
-              <h2>Decision and Evidence Log</h2>
+              <h2>Decision, Notes, and Evidence Log</h2>
             </div>
             <button id="addManualEvidence" class="ghost">Add note</button>
           </div>
@@ -258,7 +258,7 @@
               <select id="decisionRelatedEventSelect"></select>
             </label>
             <label>
-              Decision or observation
+              <span id="decisionTextLabel">Decision or observation</span>
               <textarea id="decisionText" rows="3" placeholder="What did the team decide, discover, or escalate?"></textarea>
             </label>
             <div class="form-grid">
@@ -271,13 +271,28 @@
                 <select id="decisionControl"></select>
               </label>
               <label>
-                Evidence referenced
+                <span id="decisionEvidenceLabel">Evidence referenced</span>
                 <input id="decisionEvidence" type="text" placeholder="IR plan, ticket, policy, backup log..." />
               </label>
             </div>
             <div class="form-actions">
               <button id="cancelEvidenceEdit" class="ghost" type="button" hidden>Cancel edit</button>
               <button id="saveEvidenceButton" class="primary">Log evidence</button>
+            </div>
+          </form>
+          <form id="noteForm" class="decision-form quick-note-form" hidden>
+            <input id="editingNoteIndex" type="hidden" value="" />
+            <label>
+              Related scenario event
+              <select id="noteRelatedEventSelect"></select>
+            </label>
+            <label>
+              Note
+              <textarea id="noteText" rows="3" placeholder="Add a facilitator note, observation, or context for this event."></textarea>
+            </label>
+            <div class="form-actions">
+              <button id="cancelNote" class="ghost" type="button">Cancel</button>
+              <button id="saveNoteButton" class="primary">Save note</button>
             </div>
           </form>
           <div id="evidenceLog" class="log-list"></div>
