@@ -946,11 +946,13 @@ function renderEvidence() {
     const meta = isNote
       ? `
         <span>${formatTime(entry.time)}</span>
+        <span>${escapeHtml(getElapsedMeta(entry.time))}</span>
         <span>Entered by: ${escapeHtml(getNoteAuthor(entry))}</span>
         <span>Related event: ${escapeHtml(getRelatedEventLabel(entry))}</span>
       `
       : `
         <span>${formatTime(entry.time)}</span>
+        <span>${escapeHtml(getElapsedMeta(entry.time))}</span>
         <span>Owner: ${escapeHtml(entry.owner)}</span>
         <span>Control: ${escapeHtml(entry.control)}</span>
         <span>Evidence: ${escapeHtml(entry.evidence)}</span>
@@ -1164,9 +1166,9 @@ function getRelatedEventLabel(entry) {
 
 function getEvidenceReportMeta(entry) {
   if (normalizeEvidenceEntryType(entry.entryType) === "note") {
-    return `${formatTime(entry.time)} | Entered by: ${getNoteAuthor(entry)} | Related event: ${getRelatedEventLabel(entry)}`;
+    return `${formatTime(entry.time)} | ${getElapsedMeta(entry.time)} | Entered by: ${getNoteAuthor(entry)} | Related event: ${getRelatedEventLabel(entry)}`;
   }
-  return `${formatTime(entry.time)} | ${entry.control} | Owner: ${entry.owner} | Evidence: ${entry.evidence}`;
+  return `${formatTime(entry.time)} | ${getElapsedMeta(entry.time)} | ${entry.control} | Owner: ${entry.owner} | Evidence: ${entry.evidence}`;
 }
 
 function resetActionRelatedEvent() {
@@ -1258,7 +1260,7 @@ function renderActions() {
     item.className = "action-item";
     item.innerHTML = `
       <strong>${escapeHtml(action.title)}</strong>
-      <span>Owner: ${escapeHtml(action.owner)} | Due: ${escapeHtml(action.due)} | Status: ${escapeHtml(action.status)}</span>
+      <span>${escapeHtml(getElapsedMeta(action.time))} | Owner: ${escapeHtml(action.owner)} | Due: ${escapeHtml(action.due)} | Status: ${escapeHtml(action.status)}</span>
       <div class="inject-actions">
         <button data-action="${index}">${action.status === "Open" ? "Mark closed" : "Reopen"}</button>
       </div>
@@ -1305,7 +1307,7 @@ function renderTimeline() {
       <div class="timeline-marker" aria-hidden="true"></div>
       <div class="timeline-content">
         <div class="timeline-topline">
-          <span>T+${escapeHtml(event.minute)} min | ${escapeHtml(event.controls.join(", "))}</span>
+          <span>T+${escapeHtml(event.minute)} min | ${escapeHtml(getEventElapsedMeta(index))} | ${escapeHtml(event.controls.join(", "))}</span>
           <span class="status-pill">${escapeHtml(event.phase)}</span>
         </div>
         <h3>${escapeHtml(event.title)}</h3>
@@ -1345,14 +1347,14 @@ function buildTimelineActivity(evidenceItems, actionItems) {
       type: getEvidenceEntryLabel(entry),
       time: entry.time,
       meta: normalizeEvidenceEntryType(entry.entryType) === "note"
-        ? `${formatTime(entry.time)} | Entered by: ${getNoteAuthor(entry)}`
-        : `${formatTime(entry.time)} | ${entry.owner} | ${entry.control}`,
+        ? `${formatTime(entry.time)} | ${getElapsedMeta(entry.time)} | Entered by: ${getNoteAuthor(entry)}`
+        : `${formatTime(entry.time)} | ${getElapsedMeta(entry.time)} | ${entry.owner} | ${entry.control}`,
       text: entry.text
     })),
     ...actionItems.map((action) => ({
       type: "Action",
       time: action.time,
-      meta: `${action.time ? formatTime(action.time) : "Time not recorded"} | ${action.owner} | ${action.status}`,
+      meta: `${action.time ? formatTime(action.time) : "Time not recorded"} | ${getElapsedMeta(action.time)} | ${action.owner} | ${action.status}`,
       text: action.title
     }))
   ].sort((a, b) => getTimeValue(a.time) - getTimeValue(b.time));
@@ -1577,7 +1579,7 @@ function buildReportHtml() {
         <div><span>Date</span><strong>${escapeHtml(date)}</strong></div>
         <div><span>Facilitator</span><strong>${escapeHtml(facilitator)}</strong></div>
         <div><span>Status</span><strong>${escapeHtml(displayStatus)}</strong></div>
-        <div><span>Duration</span><strong>${escapeHtml(state.completedAt ? formatDuration(state.completedDurationSeconds) : "In progress")}</strong></div>
+        <div><span>Total duration</span><strong>${escapeHtml(getReportDuration())}</strong></div>
         <div><span>Runbook</span><strong>${escapeHtml(runbook.name)}</strong></div>
         <div><span>Runbook source</span><strong>${escapeHtml(source)}</strong></div>
       </div>
@@ -1597,7 +1599,7 @@ function buildReportHtml() {
       <h2>Scenario Timeline</h2>
       ${buildReportList(events, (event, index) => {
         const revealStatus = state.revealed.includes(index) ? "Revealed" : "Not revealed";
-        return `<strong>T+${escapeHtml(event.minute)} ${escapeHtml(event.title)}</strong><span>${escapeHtml(revealStatus)} | ${escapeHtml(event.controls.join(", "))}</span>`;
+        return `<strong>T+${escapeHtml(event.minute)} ${escapeHtml(event.title)}</strong><span>${escapeHtml(revealStatus)} | ${escapeHtml(getEventElapsedMeta(index))} | ${escapeHtml(event.controls.join(", "))}</span>`;
       }, "No scenario events recorded")}
     </section>
 
@@ -1616,7 +1618,7 @@ function buildReportHtml() {
 
     <section class="report-section">
       <h2>Remediation Tracker</h2>
-      ${buildReportList(state.actions, (action) => `<strong>${escapeHtml(action.title)}</strong><span>Owner: ${escapeHtml(action.owner)} | Due: ${escapeHtml(action.due)} | Status: ${escapeHtml(action.status)}</span>`, "No remediation actions recorded")}
+      ${buildReportList(state.actions, (action) => `<strong>${escapeHtml(action.title)}</strong><span>${escapeHtml(getElapsedMeta(action.time))} | Owner: ${escapeHtml(action.owner)} | Due: ${escapeHtml(action.due)} | Status: ${escapeHtml(action.status)}</span>`, "No remediation actions recorded")}
     </section>
 
     <section class="report-section">
@@ -1634,9 +1636,9 @@ function buildReportText() {
   const { name, date, facilitator, objective, runbook, events } = getReportData();
   const organizationName = getOrganizationName();
   const participantLines = state.participants.length ? state.participants.map((p) => `- ${p.name} (${p.role})`).join("\n") : "- No participants recorded";
-  const eventLines = events.map((event, index) => `- T+${event.minute} ${event.title} [${state.revealed.includes(index) ? "Revealed" : "Not revealed"}] (${event.controls.join(", ")})`).join("\n");
+  const eventLines = events.map((event, index) => `- T+${event.minute} ${event.title} [${state.revealed.includes(index) ? "Revealed" : "Not revealed"}] | ${getEventElapsedMeta(index)} (${event.controls.join(", ")})`).join("\n");
   const evidenceLines = state.evidence.length ? state.evidence.map((entry) => `- ${getEvidenceEntryLabel(entry)} | ${getEvidenceReportMeta(entry)} | ${entry.text}`).join("\n") : "- No notes or evidence logged";
-  const actionLines = state.actions.length ? state.actions.map((action) => `- ${action.title} | Owner: ${action.owner} | Due: ${action.due} | Status: ${action.status}`).join("\n") : "- No remediation actions recorded";
+  const actionLines = state.actions.length ? state.actions.map((action) => `- ${action.title} | ${getElapsedMeta(action.time)} | Owner: ${action.owner} | Due: ${action.due} | Status: ${action.status}`).join("\n") : "- No remediation actions recorded";
   const controlLines = controls.map((control) => `- ${control.id} ${control.name}: ${state.evidence.filter((entry) => entry.control === control.id).length} evidence item(s)`).join("\n");
   return `${name}
 
@@ -1645,7 +1647,7 @@ Date: ${date}
 Facilitator: ${facilitator}
 Status: ${state.startedAt ? "Active exercise" : "Draft"}
 Completed: ${state.completedAt ? formatTime(state.completedAt) : "Not completed"}
-Duration: ${state.completedAt ? formatDuration(state.completedDurationSeconds) : "In progress"}
+Total duration: ${getReportDuration()}
 Runbook: ${runbook.name}
 Runbook source: ${getRunbookSourceLabel()}
 
@@ -2019,6 +2021,29 @@ function getElapsedSeconds() {
   }
   const end = state.completedAt ? new Date(state.completedAt).getTime() : Date.now();
   return calculateElapsedSeconds(end);
+}
+
+function getElapsedDurationForTime(value) {
+  if (!state.startedAt) return "Not started";
+  const timestamp = new Date(value || 0).getTime();
+  if (!Number.isFinite(timestamp)) return "Not recorded";
+  return formatDuration(calculateElapsedSeconds(timestamp));
+}
+
+function getElapsedMeta(value) {
+  return `Elapsed: ${getElapsedDurationForTime(value)}`;
+}
+
+function getReportDuration() {
+  return state.startedAt ? formatDuration(getElapsedSeconds()) : "Not started";
+}
+
+function getEventElapsedMeta(index) {
+  const revealEntry = state.evidence.find((entry) => {
+    return entry.evidence === "Scenario timeline" && getRelatedEventIndex(entry, getActiveEvents()) === index;
+  });
+  if (!revealEntry) return state.revealed.includes(index) ? "Elapsed: Not recorded" : "Elapsed: Not revealed";
+  return getElapsedMeta(revealEntry.time);
 }
 
 function calculateElapsedSeconds(endTime = Date.now()) {
