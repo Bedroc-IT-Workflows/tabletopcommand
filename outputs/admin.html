@@ -39,6 +39,10 @@
           <strong>Settings</strong>
           <span>Exercise defaults and policies</span>
         </button>
+        <button class="admin-nav-item" data-admin-section="about" type="button">
+          <strong>About</strong>
+          <span>Version, build, and runtime details</span>
+        </button>
       </aside>
 
       <section class="admin-page-shell admin-section active" id="admin-section-runbooks" aria-labelledby="runbookAdminTitle">
@@ -291,8 +295,50 @@
           </div>
         </div>
       </section>
+
+      <section class="admin-page-shell admin-section" id="admin-section-about" hidden>
+        <header class="admin-page-header">
+          <div>
+            <p class="eyebrow">Application details</p>
+            <h2>About Tabletop Command</h2>
+          </div>
+        </header>
+        <div class="admin-settings-panel">
+          <div class="about-grid">
+            <div>
+              <span>Version</span>
+              <strong id="aboutVersion">v1.0.0-local</strong>
+            </div>
+            <div>
+              <span>Build number</span>
+              <strong id="aboutBuildNumber">local</strong>
+            </div>
+            <div>
+              <span>Build date</span>
+              <strong id="aboutBuildDate">Local development</strong>
+            </div>
+            <div>
+              <span>Commit</span>
+              <strong id="aboutCommit">local</strong>
+            </div>
+            <div>
+              <span>Runtime</span>
+              <strong id="aboutRuntime">Local file mode</strong>
+            </div>
+            <div>
+              <span>Storage</span>
+              <strong>Browser local storage</strong>
+            </div>
+          </div>
+          <div class="admin-placeholder about-notes">
+            <h3>Deployment</h3>
+            <p>GitHub Actions generates build metadata during Azure Static Web Apps deployment. Local file mode uses the checked-in fallback build info.</p>
+          </div>
+        </div>
+      </section>
     </main>
 
+    <script src="build-info.js"></script>
     <script src="admin.js"></script>
   </body>
 </html>

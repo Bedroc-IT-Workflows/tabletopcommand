@@ -271,6 +271,15 @@ let adminEventIndex = 0;
 
 const $ = (selector) => document.querySelector(selector);
 
+function getBuildInfo() {
+  return window.TABLETOP_BUILD || {
+    version: "1.0.0-local",
+    buildNumber: "local",
+    buildDate: "Local development",
+    commit: "local"
+  };
+}
+
 function init() {
   loadRunbooks();
   loadAppSettings();
@@ -278,6 +287,7 @@ function init() {
   bindEvents();
   renderRunbookAdmin();
   renderAppSettings();
+  renderAbout();
 }
 
 function bindEvents() {
@@ -340,6 +350,15 @@ function activateAdminSection(section) {
     panel.hidden = panel.id !== `admin-section-${section}`;
     panel.classList.toggle("active", panel.id === `admin-section-${section}`);
   });
+}
+
+function renderAbout() {
+  const build = getBuildInfo();
+  $("#aboutVersion").textContent = `v${build.version}`;
+  $("#aboutBuildNumber").textContent = build.buildNumber;
+  $("#aboutBuildDate").textContent = build.buildDate;
+  $("#aboutCommit").textContent = build.commit === "local" ? "local" : build.commit.slice(0, 12);
+  $("#aboutRuntime").textContent = window.location.protocol === "file:" ? "Local file mode" : "Azure Static Web Apps";
 }
 
 function loadRunbooks() {

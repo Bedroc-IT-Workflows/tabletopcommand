@@ -288,6 +288,15 @@ const $ = (selector) => document.querySelector(selector);
 let appSettings = { ...defaultAppSettings };
 let currentUserName = "Signed in";
 
+function getBuildInfo() {
+  return window.TABLETOP_BUILD || {
+    version: "1.0.0-local",
+    buildNumber: "local",
+    buildDate: "Local development",
+    commit: "local"
+  };
+}
+
 async function init() {
   loadAppSettings();
   renderBranding();
@@ -303,6 +312,7 @@ async function init() {
   populateRunbookSelect();
   renderAll();
   bindEvents();
+  renderBuildInfo();
   renderEntryExperience();
   window.addEventListener("pageshow", syncAppSettingsFromStorage);
   setInterval(updateTimer, 1000);
@@ -1556,6 +1566,12 @@ function renderBranding() {
     image.src = logoSrc;
     image.alt = organizationName;
   });
+}
+
+function renderBuildInfo() {
+  const version = getBuildInfo().version;
+  const label = $("#appVersionLabel");
+  if (label) label.textContent = `v${version}`;
 }
 
 function applyFavicon() {

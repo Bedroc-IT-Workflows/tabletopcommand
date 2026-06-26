@@ -25,3 +25,7 @@ Local file mode bypasses hosted SSO so the app can be tested without Azure.
 The app includes `outputs/staticwebapp.config.json`, which requires authenticated users when deployed to Azure Static Web Apps.
 
 See `outputs/ENTRA-SSO-SETUP.md` for Microsoft Entra ID setup notes.
+
+## Build Version
+
+The app reads build details from `outputs/build-info.js`. Local file mode uses the checked-in fallback version. During GitHub Actions deployment, the workflow overwrites that file so deployed builds use an auto-incrementing version in the format `1.0.<GitHub run number>`.
