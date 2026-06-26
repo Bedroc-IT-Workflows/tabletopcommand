@@ -660,6 +660,86 @@ function populateRunbookSelect() {
   select.disabled = Boolean(state.startedAt);
 }
 
+function renderScenarioProgress() {
+  const wrapper = $("#scenarioProgress");
+  if (!wrapper) return;
+  const events = getActiveEvents();
+  const revealedIndexes = getRevealedEventIndexes(events);
+  const latestIndex = getLatestRevealedEventIndex(events);
+
+  if (!events.length) {
+    wrapper.innerHTML = `
+      <div class="progress-summary">
+        <div>
+          <p class="eyebrow">Scenario progress</p>
+          <strong>No runbook selected</strong>
+        </div>
+        <span>Select a runbook to load progress.</span>
+      </div>
+    `;
+    return;
+  }
+
+  const progressPercent = Math.round((revealedIndexes.length / events.length) * 100);
+  const currentEvent = latestIndex === null ? events[0] : events[latestIndex];
+  const currentLabel = latestIndex === null ? "Not started" : `${currentEvent.phase}: ${currentEvent.title}`;
+  const steps = events.map((event, index) => {
+    const isComplete = state.revealed.includes(index);
+    const isCurrent = index === latestIndex;
+    const status = isComplete ? "Revealed" : "Upcoming";
+    const classes = ["progress-step"];
+    if (isComplete) classes.push("complete");
+    if (isCurrent) classes.push("current");
+    return `
+      <li class="${classes.join(" ")}" title="T+${escapeHtml(event.minute)} ${escapeHtml(event.title)}">
+        <span class="progress-dot" aria-hidden="true">${index + 1}</span>
+        <span class="progress-step-text">
+          <strong>${escapeHtml(event.phase || `Event ${index + 1}`)}</strong>
+          <small>${escapeHtml(status)}</small>
+        </span>
+      </li>
+    `;
+  }).join("");
+
+  wrapper.innerHTML = `
+    <div class="progress-summary">
+      <div>
+        <p class="eyebrow">Scenario progress</p>
+        <strong>${revealedIndexes.length} of ${events.length} events revealed</strong>
+      </div>
+      <span id="scenarioProgressStatus">${escapeHtml(currentLabel)} | Elapsed ${escapeHtml(getReportDuration())}</span>
+    </div>
+    <div class="progress-track" aria-hidden="true">
+      <span style="width: ${progressPercent}%"></span>
+    </div>
+    <ol class="progress-steps">
+      ${steps}
+    </ol>
+  `;
+}
+
+function renderScenarioProgressSummary() {
+  const status = $("#scenarioProgressStatus");
+  if (!status) return;
+  const events = getActiveEvents();
+  if (!events.length) return;
+  const latestIndex = getLatestRevealedEventIndex(events);
+  const currentEvent = latestIndex === null ? events[0] : events[latestIndex];
+  const currentLabel = latestIndex === null ? "Not started" : `${currentEvent.phase}: ${currentEvent.title}`;
+  status.textContent = `${currentLabel} | Elapsed ${getReportDuration()}`;
+}
+
+function getRevealedEventIndexes(events) {
+  return state.revealed
+    .filter((index) => Number.isInteger(index) && index >= 0 && index < events.length)
+    .sort((a, b) => a - b);
+}
+
+function getLatestRevealedEventIndex(events) {
+  const revealedIndexes = getRevealedEventIndexes(events);
+  return revealedIndexes.length ? revealedIndexes[revealedIndexes.length - 1] : null;
+}
+
 function renderInjects() {
   const list = $("#injectList");
   const template = $("#injectTemplate");
@@ -2009,9 +2089,11 @@ function activateTab(id) {
 function updateTimer() {
   if (!state.startedAt) {
     $("#elapsedTime").textContent = "00:00";
+    renderScenarioProgressSummary();
     return;
   }
   $("#elapsedTime").textContent = formatDuration(getElapsedSeconds());
+  renderScenarioProgressSummary();
 }
 
 function getElapsedSeconds() {
@@ -2070,6 +2152,7 @@ function renderAll() {
   populateRelatedEventPicklists();
   renderAppTitle();
   renderSetupRunbookMeta();
+  renderScenarioProgress();
   renderInjects();
   renderParticipants();
   renderEvidence();
