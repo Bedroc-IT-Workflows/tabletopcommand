@@ -288,6 +288,7 @@ function init() {
   renderRunbookAdmin();
   renderAppSettings();
   renderAbout();
+  renderFooterBuildInfo();
 }
 
 function bindEvents() {
@@ -356,9 +357,22 @@ function renderAbout() {
   const build = getBuildInfo();
   $("#aboutVersion").textContent = `v${build.version}`;
   $("#aboutBuildNumber").textContent = build.buildNumber;
-  $("#aboutBuildDate").textContent = build.buildDate;
+  $("#aboutBuildDate").textContent = formatBuildDate(build.buildDate);
   $("#aboutCommit").textContent = build.commit === "local" ? "local" : build.commit.slice(0, 12);
   $("#aboutRuntime").textContent = window.location.protocol === "file:" ? "Local file mode" : "Azure Static Web Apps";
+}
+
+function renderFooterBuildInfo() {
+  const build = getBuildInfo();
+  $("#footerBuildVersion").textContent = `v${build.version}`;
+  $("#footerBuildDate").textContent = formatBuildDate(build.buildDate);
+}
+
+function formatBuildDate(value) {
+  if (!value || value === "Local development") return "Local development";
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return value;
+  return `Built ${date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
 }
 
 function loadRunbooks() {

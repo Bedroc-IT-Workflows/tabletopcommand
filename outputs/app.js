@@ -330,6 +330,7 @@ function renderEntryExperience() {
   $("#splashPage").hidden = false;
   $("#appHeader").hidden = true;
   $("#exercisePage").hidden = true;
+  $("#siteFooter").hidden = true;
 }
 
 function enterWorkspace() {
@@ -342,6 +343,7 @@ function showWorkspace() {
   $("#splashPage").hidden = true;
   $("#appHeader").hidden = false;
   $("#exercisePage").hidden = false;
+  $("#siteFooter").hidden = false;
 }
 
 function syncAppSettingsFromStorage() {
@@ -546,6 +548,7 @@ function showAuthGate(message) {
   $("#splashPage").hidden = true;
   $("#appHeader").hidden = true;
   $("#exercisePage").hidden = true;
+  $("#siteFooter").hidden = true;
   $("#authGateMessage").textContent = message;
   $("#authGate").hidden = false;
 }
@@ -1569,9 +1572,21 @@ function renderBranding() {
 }
 
 function renderBuildInfo() {
-  const version = getBuildInfo().version;
+  const build = getBuildInfo();
+  const version = build.version;
   const label = $("#appVersionLabel");
   if (label) label.textContent = `v${version}`;
+  const footerVersion = $("#footerBuildVersion");
+  const footerDate = $("#footerBuildDate");
+  if (footerVersion) footerVersion.textContent = `v${version}`;
+  if (footerDate) footerDate.textContent = formatBuildDate(build.buildDate);
+}
+
+function formatBuildDate(value) {
+  if (!value || value === "Local development") return "Local development";
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return value;
+  return `Built ${date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
 }
 
 function applyFavicon() {
