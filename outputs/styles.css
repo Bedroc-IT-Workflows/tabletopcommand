@@ -258,6 +258,19 @@ button:disabled {
   padding: 0 22px;
 }
 
+.splash-actions .header-link {
+  min-height: 46px;
+  border-color: rgba(245, 242, 234, 0.5);
+  padding: 0 22px;
+  color: #f5f2ea;
+  background: rgba(245, 242, 234, 0.08);
+}
+
+.splash-actions .header-link:hover {
+  border-color: #f5f2ea;
+  background: rgba(245, 242, 234, 0.16);
+}
+
 .splash-command-preview {
   display: grid;
   gap: 14px;
