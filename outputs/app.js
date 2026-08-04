@@ -1576,6 +1576,8 @@ function renderBuildInfo() {
   const version = build.version;
   const label = $("#appVersionLabel");
   if (label) label.textContent = `v${version}`;
+  const splashVersion = $("#splashVersionLabel");
+  if (splashVersion) splashVersion.textContent = `v${version}`;
   const footerVersion = $("#footerBuildVersion");
   const footerDate = $("#footerBuildDate");
   if (footerVersion) footerVersion.textContent = `v${version}`;
