@@ -1371,6 +1371,7 @@ function renderActions() {
 
 function renderTimeline() {
   const events = getActiveEvents();
+  const currentEventIndex = getLatestRevealedEventIndex(events);
   const list = $("#timelineList");
   const summary = $("#timelineSummary");
   if (!list || !summary) return;
@@ -1395,7 +1396,9 @@ function renderTimeline() {
     const eventActions = state.actions.filter((action) => getRelatedEventIndex(action, events) === index);
     const node = document.createElement("article");
     const revealed = state.revealed.includes(index);
-    node.className = `timeline-item event ${revealed ? "complete" : "pending"}`;
+    const isCurrent = index === currentEventIndex;
+    node.className = `timeline-item event ${revealed ? "complete" : "pending"}${isCurrent ? " current" : ""}`;
+    if (isCurrent) node.setAttribute("aria-current", "step");
     node.innerHTML = `
       <div class="timeline-marker" aria-hidden="true"></div>
       <div class="timeline-content">
