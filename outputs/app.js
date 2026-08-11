@@ -169,6 +169,7 @@ let runbooks = [];
 let adminRunbookId = defaultRunbook.id;
 let adminEventIndex = 0;
 let runbookEventsExpanded = true;
+let exerciseSidebarExpanded = true;
 
 const scenarioSchema = "bedroc-soc2-tabletop-scenario/v1";
 const runbookSchema = "bedroc-soc2-tabletop-runbook/v1";
@@ -176,6 +177,7 @@ const scenarioStorageKey = "soc2-tabletop-state";
 const runbookStorageKey = "soc2-tabletop-runbooks";
 const appSettingsStorageKey = "soc2-tabletop-app-settings";
 const splashEnteredStorageKey = "soc2-tabletop-splash-entered";
+const sidebarExpandedStorageKey = "soc2-tabletop-sidebar-expanded";
 const defaultAppLogoSource = "assets/built-on-white.png";
 const defaultDocumentLogoSource = "assets/bedroc-logo-grey.png";
 const defaultFaviconSource = "assets/bedroc-logo-grey2.png";
@@ -300,6 +302,7 @@ function getBuildInfo() {
 
 async function init() {
   loadAppSettings();
+  exerciseSidebarExpanded = localStorage.getItem(sidebarExpandedStorageKey) !== "false";
   renderBranding();
   bindSplashEvents();
   const authReady = await initializeAuth();
@@ -312,6 +315,7 @@ async function init() {
   populateControls();
   populateRunbookSelect();
   renderAll();
+  renderExerciseSidebar();
   bindEvents();
   renderBuildInfo();
   renderEntryExperience();
@@ -354,6 +358,12 @@ function syncAppSettingsFromStorage() {
 
 function bindEvents() {
   bindHeaderMenu();
+
+  $("#toggleExerciseSidebar").addEventListener("click", () => {
+    exerciseSidebarExpanded = !exerciseSidebarExpanded;
+    localStorage.setItem(sidebarExpandedStorageKey, String(exerciseSidebarExpanded));
+    renderExerciseSidebar();
+  });
 
   document.querySelectorAll(".tab").forEach((tab) => {
     tab.addEventListener("click", () => activateTab(tab.dataset.tab));
@@ -473,6 +483,20 @@ function bindEvents() {
     });
   });
 
+}
+
+function renderExerciseSidebar() {
+  const layout = $("#exercisePage");
+  const button = $("#toggleExerciseSidebar");
+  const content = $("#exerciseSidebarContent");
+  if (!layout || !button || !content) return;
+
+  layout.classList.toggle("sidebar-collapsed", !exerciseSidebarExpanded);
+  button.setAttribute("aria-expanded", String(exerciseSidebarExpanded));
+  button.setAttribute("aria-label", exerciseSidebarExpanded ? "Collapse exercise sidebar" : "Expand exercise sidebar");
+  button.title = exerciseSidebarExpanded ? "Collapse exercise sidebar" : "Expand exercise sidebar";
+  button.querySelector(".sidebar-toggle-label").textContent = exerciseSidebarExpanded ? "Collapse exercise sidebar" : "Expand exercise sidebar";
+  content.hidden = !exerciseSidebarExpanded;
 }
 
 function bindHeaderMenu() {

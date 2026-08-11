@@ -679,6 +679,11 @@ h3 {
   grid-template-columns: 360px minmax(0, 1fr);
   gap: 22px;
   padding: 22px;
+  transition: grid-template-columns 180ms ease;
+}
+
+.layout.sidebar-collapsed {
+  grid-template-columns: 52px minmax(0, 1fr);
 }
 
 .roadmap-page {
@@ -900,9 +905,85 @@ h3 {
 }
 
 .side-panel {
+  align-content: start;
+}
+
+.sidebar-content {
   display: grid;
   gap: 16px;
-  align-content: start;
+}
+
+.sidebar-content[hidden] {
+  display: none;
+}
+
+.sidebar-toggle-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  color: var(--muted);
+  background: var(--surface);
+}
+
+.sidebar-toggle:hover {
+  color: var(--text);
+}
+
+.sidebar-toggle-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sidebar-toggle-chevron {
+  transform-origin: center;
+  transition: transform 180ms ease;
+}
+
+.sidebar-toggle[aria-expanded="false"] .sidebar-toggle-chevron {
+  transform: rotate(180deg);
+}
+
+.sidebar-toggle-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.layout.sidebar-collapsed .sidebar-toggle-row {
+  margin-bottom: 0;
+}
+
+.layout.sidebar-collapsed .sidebar-toggle {
+  width: 100%;
+  padding-inline: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layout {
+    transition: none;
+  }
+
+  .sidebar-toggle-chevron {
+    transition: none;
+  }
 }
 
 .panel {
@@ -2051,6 +2132,15 @@ textarea {
   .layout {
     grid-template-columns: 1fr;
   }
+
+  .layout.sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .layout.sidebar-collapsed .sidebar-toggle {
+    width: auto;
+  }
+
 
   .form-grid,
   .inline-form,
