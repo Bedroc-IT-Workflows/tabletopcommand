@@ -1088,6 +1088,12 @@ textarea {
   margin-bottom: 16px;
 }
 
+.runbook-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .timer-box {
   min-width: 116px;
   border: 1px solid var(--line);
@@ -1255,6 +1261,22 @@ textarea {
 
 .inject-card.revealed {
   border-left: 5px solid var(--rust);
+}
+
+.inject-card.current {
+  border-color: var(--rust);
+  box-shadow: 0 0 0 2px rgba(155, 96, 64, 0.12);
+}
+
+.inject-current-label {
+  margin-right: auto;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #fff;
+  background: var(--rust);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
 .inject-card h3 {
@@ -2077,6 +2099,7 @@ textarea {
     flex-direction: column;
   }
 
+  .runbook-header-actions,
   .report-actions,
   .timeline-header-actions,
   .tabs,
@@ -2086,6 +2109,7 @@ textarea {
   }
 
   .tab,
+  .runbook-header-actions button,
   .report-actions button,
   .timeline-header-actions button,
   .inject-actions button {
@@ -2407,6 +2431,7 @@ textarea {
 
   .form-actions,
   .inject-actions,
+  .runbook-header-actions,
   .report-actions,
   .timeline-header-actions,
   .admin-actions {

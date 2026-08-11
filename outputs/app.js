@@ -168,6 +168,7 @@ const state = {
 let runbooks = [];
 let adminRunbookId = defaultRunbook.id;
 let adminEventIndex = 0;
+let runbookEventsExpanded = true;
 
 const scenarioSchema = "bedroc-soc2-tabletop-scenario/v1";
 const runbookSchema = "bedroc-soc2-tabletop-runbook/v1";
@@ -356,6 +357,11 @@ function bindEvents() {
 
   document.querySelectorAll(".tab").forEach((tab) => {
     tab.addEventListener("click", () => activateTab(tab.dataset.tab));
+  });
+
+  $("#toggleRunbookEvents").addEventListener("click", () => {
+    runbookEventsExpanded = !runbookEventsExpanded;
+    renderInjects();
   });
 
   $("#startExercise").addEventListener("click", () => {
@@ -757,7 +763,12 @@ function renderInjects() {
   const list = $("#injectList");
   const template = $("#injectTemplate");
   const events = getActiveEvents();
+  const currentEventIndex = getLatestRevealedEventIndex(events);
+  const toggleButton = $("#toggleRunbookEvents");
   list.innerHTML = "";
+
+  toggleButton.setAttribute("aria-expanded", String(runbookEventsExpanded));
+  toggleButton.textContent = runbookEventsExpanded ? "Collapse past events" : "Show all events";
 
   if (!events.length) {
     const empty = document.createElement("article");
@@ -774,10 +785,27 @@ function renderInjects() {
     return;
   }
 
-  events.forEach((inject, index) => {
+  const indexedEvents = events.map((inject, index) => ({ inject, index }));
+  const visibleEvents = runbookEventsExpanded
+    ? indexedEvents
+    : [
+        ...indexedEvents.filter(({ index }) => index === currentEventIndex),
+        ...indexedEvents.filter(({ index }) => index !== currentEventIndex && !state.revealed.includes(index))
+      ];
+
+  visibleEvents.forEach(({ inject, index }) => {
     const node = template.content.firstElementChild.cloneNode(true);
     const revealed = state.revealed.includes(index);
+    const isCurrent = index === currentEventIndex;
     node.classList.toggle("revealed", revealed);
+    node.classList.toggle("current", isCurrent);
+    if (isCurrent) {
+      node.setAttribute("aria-current", "step");
+      const currentLabel = document.createElement("span");
+      currentLabel.className = "inject-current-label";
+      currentLabel.textContent = "Current event";
+      node.querySelector(".inject-topline").prepend(currentLabel);
+    }
     node.querySelector(".inject-time").textContent = `T+${inject.minute} min`;
     node.querySelector(".inject-phase").textContent = inject.phase;
     node.querySelector("h3").textContent = inject.title;
