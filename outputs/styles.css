@@ -1189,6 +1189,7 @@ textarea {
 }
 
 .progress-dot {
+  position: relative;
   display: inline-grid;
   flex: 0 0 auto;
   place-items: center;
@@ -1209,6 +1210,16 @@ textarea {
 .progress-step.current .progress-dot {
   color: #fff;
   background: var(--rust);
+}
+
+.progress-step.current .progress-dot::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--rust);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: current-indicator-pulse 2s ease-out infinite;
 }
 
 .progress-step-text {
@@ -1390,10 +1401,10 @@ textarea {
   border: 2px solid var(--rust);
   border-radius: inherit;
   pointer-events: none;
-  animation: timeline-current-pulse 2s ease-out infinite;
+  animation: current-indicator-pulse 2s ease-out infinite;
 }
 
-@keyframes timeline-current-pulse {
+@keyframes current-indicator-pulse {
   0% {
     opacity: 0.65;
     transform: scale(0.85);
@@ -1407,6 +1418,7 @@ textarea {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .progress-step.current .progress-dot::after,
   .timeline-item.current .timeline-marker::after {
     animation: none;
     opacity: 0.45;

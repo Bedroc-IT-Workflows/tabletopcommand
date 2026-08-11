@@ -699,12 +699,12 @@ function renderScenarioProgress() {
   const steps = events.map((event, index) => {
     const isComplete = state.revealed.includes(index);
     const isCurrent = index === latestIndex;
-    const status = isComplete ? "Revealed" : "Upcoming";
+    const status = isCurrent ? "Current" : isComplete ? "Revealed" : "Upcoming";
     const classes = ["progress-step"];
     if (isComplete) classes.push("complete");
     if (isCurrent) classes.push("current");
     return `
-      <li class="${classes.join(" ")}" title="T+${escapeHtml(event.minute)} ${escapeHtml(event.title)}">
+      <li class="${classes.join(" ")}"${isCurrent ? ' aria-current="step"' : ""} title="T+${escapeHtml(event.minute)} ${escapeHtml(event.title)}">
         <span class="progress-dot" aria-hidden="true">${index + 1}</span>
         <span class="progress-step-text">
           <strong>${escapeHtml(event.phase || `Event ${index + 1}`)}</strong>
