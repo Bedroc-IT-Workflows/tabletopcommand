@@ -153,6 +153,7 @@ const emptyRunbook = {
 
 const state = {
   startedAt: null,
+  pauses: [],
   completedAt: null,
   completedDurationSeconds: null,
   selectedRunbookId: "",
@@ -389,6 +390,7 @@ function bindEvents() {
     renderAll();
   });
   $("#completeExercise").addEventListener("click", completeExercise);
+  $("#pauseExercise").addEventListener("click", toggleExercisePause);
 
   $("#resetExercise").addEventListener("click", () => {
     if (!confirm("Reset this tabletop exercise? This clears local exercise data but keeps saved runbook templates.")) return;
@@ -846,7 +848,7 @@ function renderInjects() {
 
     const revealButton = node.querySelector(".reveal-button");
     revealButton.textContent = revealed ? "Revealed" : "Reveal";
-    revealButton.disabled = revealed || Boolean(state.completedAt);
+    revealButton.disabled = revealed || Boolean(state.completedAt) || isExercisePaused();
     revealButton.addEventListener("click", () => revealInject(index));
 
     const decisionButton = node.querySelector(".decision-button");
@@ -874,7 +876,7 @@ function renderInjects() {
 }
 
 function revealInject(index) {
-  if (state.completedAt) return;
+  if (state.completedAt || isExercisePaused()) return;
   if (!state.startedAt) {
     const runbook = getSelectedTemplate();
     state.sessionRunbook = cloneRunbook(runbook);
@@ -887,9 +889,27 @@ function revealInject(index) {
   renderAll();
 }
 
+function isExercisePaused() {
+  return Boolean(state.startedAt && !state.completedAt && state.pauses.some((pause) => !pause.endedAt));
+}
+
+function toggleExercisePause() {
+  if (!state.startedAt || state.completedAt) return;
+  const paused = isExercisePaused();
+  const now = new Date().toISOString();
+  if (paused) {
+    state.pauses.find((pause) => !pause.endedAt).endedAt = now;
+  } else {
+    state.pauses.push({ startedAt: now, endedAt: null });
+  }
+  logEvidence(paused ? "Exercise resumed." : "Exercise paused.", "Facilitator", "CC7.4", "Exercise pause record");
+  persist();
+  renderAll();
+}
+
 function completeExercise() {
   const events = getActiveEvents();
-  if (!state.startedAt || state.completedAt) return;
+  if (!state.startedAt || state.completedAt || isExercisePaused()) return;
   if (!events.length || state.revealed.length < events.length) {
     alert("Reveal all scenario events before completing the exercise.");
     return;
@@ -1578,6 +1598,10 @@ function renderCoverage() {
 }
 
 function renderSetupRunbookMeta() {
+  const pauseButton = $("#pauseExercise");
+  pauseButton.hidden = !state.startedAt || Boolean(state.completedAt);
+  pauseButton.textContent = isExercisePaused() ? "Resume exercise" : "Pause exercise";
+  $("#pauseNotice").hidden = !isExercisePaused();
   const runbook = getActiveRunbook();
   if (!state.startedAt && !state.selectedRunbookId) {
     $("#selectedRunbookMeta").textContent = "No runbook selected. Choose a runbook before starting the exercise.";
@@ -1588,7 +1612,7 @@ function renderSetupRunbookMeta() {
   const mode = state.startedAt ? "Locked session snapshot" : "Template";
   const completionText = state.completedAt ? ` | Completed ${formatTime(state.completedAt)} | Duration ${formatDuration(state.completedDurationSeconds)}` : "";
   $("#selectedRunbookMeta").textContent = `${mode}: ${runbook.name} | ${runbook.events.length} scenario event(s).${completionText}`;
-  $("#startExercise").textContent = state.completedAt ? "Exercise complete" : state.startedAt ? "Exercise active" : "Start exercise";
+  $("#startExercise").textContent = state.completedAt ? "Exercise complete" : isExercisePaused() ? "Exercise paused" : state.startedAt ? "Exercise active" : "Start exercise";
   $("#startExercise").disabled = Boolean(state.startedAt);
   renderCompletionPanel();
 }
@@ -1596,7 +1620,7 @@ function renderSetupRunbookMeta() {
 function renderCompletionPanel() {
   const panel = $("#completionPanel");
   const events = getActiveEvents();
-  const ready = Boolean(state.startedAt && !state.completedAt && events.length && state.revealed.length >= events.length);
+  const ready = Boolean(state.startedAt && !state.completedAt && !isExercisePaused() && events.length && state.revealed.length >= events.length);
   panel.hidden = !ready;
   if (!ready) return;
 
@@ -1696,7 +1720,7 @@ function renderReport() {
     state.reportHtml = buildReportHtml();
   }
   $("#reportDocument").innerHTML = state.reportHtml;
-  $("#exerciseStatus").textContent = state.completedAt ? "Complete" : state.startedAt ? "Active" : "Draft";
+  $("#exerciseStatus").textContent = state.completedAt ? "Complete" : isExercisePaused() ? "Paused" : state.startedAt ? "Active" : "Draft";
 }
 
 function saveReportEditorContent() {
@@ -1732,7 +1756,7 @@ function getReportData() {
 
 function buildReportHtml() {
   const { name, date, facilitator, objective, runbook, events } = getReportData();
-  const status = state.startedAt ? "Active exercise" : "Draft";
+  const status = isExercisePaused() ? "Paused exercise" : state.startedAt ? "Active exercise" : "Draft";
   const displayStatus = state.completedAt ? "Complete" : status;
   const source = getRunbookSourceLabel();
   const organizationName = getOrganizationName();
@@ -1813,7 +1837,7 @@ function buildReportText() {
 Prepared for: ${organizationName}
 Date: ${date}
 Facilitator: ${facilitator}
-Status: ${state.startedAt ? "Active exercise" : "Draft"}
+Status: ${state.completedAt ? "Complete" : isExercisePaused() ? "Paused exercise" : state.startedAt ? "Active exercise" : "Draft"}
 Completed: ${state.completedAt ? formatTime(state.completedAt) : "Not completed"}
 Total duration: ${getReportDuration()}
 Runbook: ${runbook.name}
@@ -2133,6 +2157,7 @@ function loadScenarioFile(event) {
 function restoreScenario(scenario) {
   const loadedState = {
     startedAt: null,
+    pauses: [],
     completedAt: null,
     completedDurationSeconds: null,
     selectedRunbookId: "",
@@ -2220,7 +2245,12 @@ function calculateElapsedSeconds(endTime = Date.now()) {
   if (!state.startedAt) return 0;
   const startedTime = new Date(state.startedAt).getTime();
   if (!Number.isFinite(startedTime) || !Number.isFinite(endTime)) return 0;
-  return Math.max(0, Math.floor((endTime - startedTime) / 1000));
+  const pausedMilliseconds = state.pauses.reduce((total, pause) => {
+    const start = Math.max(startedTime, new Date(pause.startedAt).getTime());
+    const end = pause.endedAt ? Math.min(endTime, new Date(pause.endedAt).getTime()) : endTime;
+    return total + Math.max(0, end - start);
+  }, 0);
+  return Math.max(0, Math.floor((endTime - startedTime - pausedMilliseconds) / 1000));
 }
 
 function formatDuration(totalSeconds) {
@@ -2281,6 +2311,10 @@ function restore() {
 }
 
 function ensureStateShape() {
+  state.pauses = Array.isArray(state.pauses) ? state.pauses.filter((pause) =>
+    pause && Number.isFinite(Date.parse(pause.startedAt)) &&
+    (pause.endedAt === null || (Number.isFinite(Date.parse(pause.endedAt)) && Date.parse(pause.endedAt) >= Date.parse(pause.startedAt)))
+  ) : [];
   state.selectedRunbookId = state.selectedRunbookId || "";
   if (!state.startedAt) state.selectedRunbookId = "";
   if (state.selectedRunbookId && !runbooks.some((runbook) => runbook.id === state.selectedRunbookId)) {
