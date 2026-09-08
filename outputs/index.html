@@ -234,6 +234,7 @@
               <h2>Scenario Events</h2>
             </div>
             <div class="runbook-header-actions">
+              <button id="pauseExercise" class="ghost" type="button" hidden>Pause exercise</button>
               <button id="toggleRunbookEvents" class="ghost" type="button" aria-controls="injectList" aria-expanded="true">Collapse past events</button>
               <div class="timer-box">
                 <span>Elapsed</span>
@@ -242,6 +243,7 @@
             </div>
           </div>
           <section id="scenarioProgress" class="scenario-progress" aria-label="Scenario progress"></section>
+          <p id="pauseNotice" role="status" hidden>Exercise paused. The timer is stopped. Resume the exercise to reveal more events or complete the scenario.</p>
           <div id="injectList" class="inject-list"></div>
         </section>
 
