@@ -28,6 +28,24 @@ Pauses survive page refreshes and JSON save/load. Elapsed times in the timeline 
 
 Run the pause/resume regression checks with `node --test tests/pause-resume.test.cjs`.
 
+## Bedroc 45-Minute Security Tabletop
+
+Select **Bedroc Microsoft 365 Account Compromise (45 minutes)** from the runbook selector. The built-in scenario is also available in Runbook Administration for customization and export. It assumes Microsoft 365 and uses a fictional customer, Northstar Manufacturing; adapt roles and tools to your environment.
+
+Start the exercise clock and reveal each round manually at its scheduled time. The times are discussion timeboxes, not simulated incident timestamps. Finish the debrief at minute 45; the app does not automatically advance or end the exercise. Pauses extend wall-clock time without consuming discussion time.
+
+| Exercise minutes | Round |
+| --- | --- |
+| 0-5 | Assign roles, review the plan, and agree on evidence capture |
+| 5-12 | Triage a suspicious email reported by a customer |
+| 12-20 | Contain an employee account with suspicious sign-in and mailbox activity |
+| 20-28 | Assess possible customer-file exposure and remaining uncertainty |
+| 28-35 | Prepare approved customer and leadership updates |
+| 35-40 | Set recovery criteria and monitoring ownership |
+| 40-45 | Debrief and record three improvements with owners and due dates |
+
+Use the event prompts to record decisions and evidence, then create the three improvement actions before completing the exercise. All incident actions are simulated; exercise completion does not imply incident resolution.
+
 ## Azure SSO
 
 The app includes `outputs/staticwebapp.config.json`, which requires authenticated users when deployed to Azure Static Web Apps.
