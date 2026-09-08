@@ -142,7 +142,72 @@ const bcdrRunbook = {
   events: bcdrEvents
 };
 
-const defaultRunbooks = [defaultRunbook, bcdrRunbook];
+const bedrocM365Runbook = {
+  id: "bedroc-m365-account-compromise-45",
+  name: "Bedroc Microsoft 365 Account Compromise (45 minutes)",
+  description: "A 45-minute facilitator-led security incident response tabletop: a compromised Bedroc employee account sends suspicious customer emails and may expose project files. Seven discussion rounds include briefing and debrief. T+ times are exercise minutes, not incident timestamps; reveal events manually at 0, 5, 12, 20, 28, 35, and 40 minutes and finish at 45. Assumes Microsoft 365; adapt roles and tools to Bedroc's actual environment.",
+  objective: "Practice incident declaration, account containment, evidence preservation, customer-impact assessment, approved communications, and recovery. Assign an incident lead, IT/security responder, customer/account representative, leadership representative, and scribe; one person may cover multiple roles. Record decisions, owners, and evidence for each round, then leave with three improvement actions and due dates. Discuss simulated actions only; do not change production systems.",
+  events: [
+    {
+      minute: 0,
+      phase: "Briefing",
+      title: "Set the team and the 45-minute clock",
+      summary: "Minutes 0-5 (5 minutes). This is a fictional Bedroc exercise, not a report of an actual incident. A Bedroc consultant uses Microsoft 365 email and a customer project folder. The customer is fictional Northstar Manufacturing. The incident may span several hours; the exercise compresses it into 45 minutes. No customer-system compromise is assumed.",
+      prompt: "Assign the incident lead, responder, customer contact, leadership contact, and scribe. Identify the incident response plan and an alternate communication channel if email cannot be trusted. The facilitator reveals each event at its T+ time and ends the debrief at minute 45. Capture: participant roles, exercise objective, and the plan/channel the team would use.",
+      controls: ["CC7.4"]
+    },
+    {
+      minute: 5,
+      phase: "Detection",
+      title: "A customer questions an email from Bedroc",
+      summary: "Minutes 5-12 (7 minutes). Northstar calls its Bedroc account contact about an unexpected 'updated project documents' email from a consultant's real address. The consultant says they did not send it and recalls signing in through a document link earlier that morning. It is not yet clear whether the message was spoofed or the account was accessed.",
+      prompt: "Who owns triage, what severity is appropriate, and what would trigger an incident declaration? How will you contact the employee and customer through trusted channels? Which original message, headers, URLs, timestamps, and sign-in records should be preserved without opening the suspicious link? Capture: incident owner, initial classification, known facts versus assumptions, and evidence requests.",
+      controls: ["CC7.2", "CC7.3"]
+    },
+    {
+      minute: 12,
+      phase: "Containment",
+      title: "Unfamiliar sign-in and a hidden mailbox rule",
+      summary: "Minutes 12-20 (8 minutes). For this exercise, IT confirms an unfamiliar successful sign-in, sent messages the consultant denies sending, and a newly created rule moving customer replies out of the inbox. The employee completed an MFA prompt while opening the earlier link; a stolen sign-in session is suspected. The account is needed for a customer meeting shortly.",
+      prompt: "Who authorizes restricting the account and revoking sessions, and how will you verify containment rather than rely on a password reset alone? What mailbox rules, authentication methods, application permissions, and device activity should be reviewed? Preserve relevant logs and rule details without delaying urgent containment. How will customer work continue safely? Capture: approved containment actions, owners, evidence retained, and verification steps.",
+      controls: ["CC6.1", "CC7.4"]
+    },
+    {
+      minute: 20,
+      phase: "Scope",
+      title: "Customer project files may have been accessed",
+      summary: "Minutes 20-28 (8 minutes). Available audit records show downloads of a Northstar project plan and contact list during the suspicious session. The files contain project information and business contact details. Some records are still being collected. Downloads suggest potential exposure but do not yet establish who controlled every session or whether other customers were affected.",
+      prompt: "How will you bound the time window, identify affected files and recipients, and check for other affected accounts or customers? Who classifies the information and evaluates customer commitments with the appropriate internal advisers? What remains unknown, and when will it be reassessed? Capture: a provisional scope statement, evidence sources, investigation owners, and unanswered questions. Do not assume that customer systems were compromised.",
+      controls: ["CC7.2", "CC7.3", "CC9.2"]
+    },
+    {
+      minute: 28,
+      phase: "Communications",
+      title: "Northstar asks whether its information was exposed",
+      summary: "Minutes 28-35 (7 minutes). Northstar asks for a written update within 30 simulated minutes and wants to know whether its files were accessed. Bedroc leadership needs a concise briefing. Investigation is continuing; the team has evidence of suspicious activity but cannot yet give a complete exposure assessment.",
+      prompt: "Who drafts and approves the customer and leadership updates? State confirmed facts, uncertainties, containment underway, any supported customer action, and the next update time without promising an unverified outcome. Who evaluates contractual or other notification requirements using actual agreements and the appropriate advisers? Capture: a short holding statement, approver, trusted delivery channel, and next-update owner/time.",
+      controls: ["CC7.4", "CC9.2"]
+    },
+    {
+      minute: 35,
+      phase: "Recovery",
+      title: "Containment appears effective; the employee needs access",
+      summary: "Minutes 35-40 (5 minutes). Exercise responders report that access restrictions and session revocation are complete, the malicious rule has been removed after its details were preserved, and recent monitoring shows no new suspicious activity. Device and account reviews still need explicit sign-off. The customer meeting is approaching; absence of new alerts alone does not prove recovery.",
+      prompt: "What account, authentication, application-permission, and device checks are required before restoring access? Who approves restoration, what additional monitoring and rollback triggers apply, and how will customer work continue if checks are incomplete? Capture: recovery criteria, approval owner, monitoring owner/time window, and remaining investigation tasks.",
+      controls: ["CC6.1", "CC7.4", "CC7.5"]
+    },
+    {
+      minute: 40,
+      phase: "Debrief",
+      title: "Close the exercise with three owned improvements",
+      summary: "Minutes 40-45 (5 minutes). End the exercise at minute 45 even if the simulated investigation remains open. Review the team's decisions and evidence across detection, containment, customer scope, communications, and recovery. Exercise completion does not mean the fictional incident is fully resolved.",
+      prompt: "What worked, what slowed the response, and which assumptions need validation? Select three concrete improvements and record an owner, due date, and completion evidence for each. Confirm who retains the exercise record and follows up on unfinished decisions. Capture: three remediation actions, key lessons, and remaining risks; review the report and complete the exercise at minute 45.",
+      controls: ["CC7.5", "CC9.2"]
+    }
+  ]
+};
+
+const defaultRunbooks = [defaultRunbook, bcdrRunbook, bedrocM365Runbook];
 const emptyRunbook = {
   id: "",
   name: "Incident Tabletop",
