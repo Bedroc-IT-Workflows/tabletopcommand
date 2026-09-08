@@ -30,21 +30,25 @@ Run the pause/resume regression checks with `node --test tests/pause-resume.test
 
 ## Bedroc 45-Minute Security Tabletop
 
-Select **Bedroc Microsoft 365 Account Compromise (45 minutes)** from the runbook selector. The built-in scenario is also available in Runbook Administration for customization and export. It assumes Microsoft 365 and uses a fictional customer, Northstar Manufacturing; adapt roles and tools to your environment.
+Select **Bedroc Microsoft 365 Account Compromise (45 minutes, revised)** from the runbook selector. The built-in scenario is also available in Runbook Administration for customization and export. It assumes Microsoft 365 and uses a fictional customer, Northstar Manufacturing; adapt roles and tools to your environment. Existing users receive the revised edition as a separate template; previously saved originals, customizations, and active session snapshots remain intact. Select the revised edition for a new exercise.
 
 Start the exercise clock and reveal each round manually at its scheduled time. The times are discussion timeboxes, not simulated incident timestamps. Finish the debrief at minute 45; the app does not automatically advance or end the exercise. Pauses extend wall-clock time without consuming discussion time.
 
 | Exercise minutes | Round |
 | --- | --- |
-| 0-5 | Assign roles, review the plan, and agree on evidence capture |
-| 5-12 | Triage a suspicious email reported by a customer |
-| 12-20 | Contain an employee account with suspicious sign-in and mailbox activity |
-| 20-28 | Assess possible customer-file exposure and remaining uncertainty |
-| 28-35 | Prepare approved customer and leadership updates |
-| 35-40 | Set recovery criteria and monitoring ownership |
-| 40-45 | Debrief and record three improvements with owners and due dates |
+| 0-5 | Assign decision owners and backups; locate response documents |
+| 5-12 | Classify the incident and set severity and executive/counsel escalation triggers |
+| 12-20 | Decide containment under presentation/deadline pressure; assess MFA recovery |
+| 20-25 | Resolve uncertain download evidence and delegated OAuth persistence |
+| 25-28 | Expand scope after suspicious shared-mailbox access |
+| 28-30 | Decide whether a fictional 72-hour notification clause is triggered |
+| 30-35 | Respond to a customer phishing click and approve communications/assistance |
+| 35-40 | Set recovery gates, residual-risk ownership, monitoring, and insurance actions |
+| 40-45 | Measure decision delays, document references, and assign three improvements |
 
-Use the event prompts to record decisions and evidence, then create the three improvement actions before completing the exercise. All incident actions are simulated; exercise completion does not imply incident resolution.
+End each round with a decision, rationale, owner, and reassessment time. Simulated 15-minute and 30-minute deadlines add decision pressure without extending discussion windows. The 72-hour clause is a fictional MSA input, not a representation of Bedroc's contracts or a legal deadline; participants identify who interprets actual agreements and insurance requirements.
+
+Required facilitator closeout: record the policies, procedures, tools, and controls actually referenced, their version/location and usability, or a gap when unavailable. Examples include the Incident Response Policy, Access Control Policy, M365 Account Recovery Procedure, Conditional Access Standard, and Customer Notification Procedure; these names are examples, not an assertion that Bedroc has documents with those titles. Record three improvements with owners, due dates, and completion evidence. These requirements are facilitator prompts rather than new application validation rules. All incident actions are simulated; exercise completion does not imply incident resolution.
 
 ## Azure SSO
 
