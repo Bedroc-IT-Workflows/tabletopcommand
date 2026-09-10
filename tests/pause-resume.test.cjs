@@ -22,7 +22,7 @@ function app() {
   vm.runInContext(source, context);
   const run = (code) => vm.runInContext(code, context);
   run(`renderAll = () => {}; renderEvidenceDependentViews = () => {};
-    populateRunbookSelect = () => {}; activateTab = () => {};
+    populateRunbookSelect = () => {}; activateTab = () => {}; resetActionForm = () => {};
     state.startedAt = new Date(0).toISOString();
     state.sessionRunbook = cloneRunbook(defaultRunbook);`);
   return { run, at: (seconds) => { now = seconds * 1000; }, elements };

@@ -321,6 +321,7 @@ const state = {
 };
 
 let runbooks = [];
+let editingAction = null;
 let adminRunbookId = defaultRunbook.id;
 let adminEventIndex = 0;
 let runbookEventsExpanded = true;
@@ -601,10 +602,16 @@ function bindEvents() {
       alert("Select the scenario event this action relates to.");
       return;
     }
-    addAction($("#actionTitle").value.trim(), getSelectedOwner("actionOwner"), $("#actionDue").value, relatedEvent);
-    $("#actionForm").reset();
-    resetActionRelatedEvent();
+    const title = $("#actionTitle").value.trim();
+    if (!title) return;
+    if (editingAction) {
+      updateAction(editingAction, title, getSelectedOwner("actionOwner"), relatedEvent);
+    } else {
+      addAction(title, getSelectedOwner("actionOwner"), relatedEvent);
+    }
+    resetActionForm();
   });
+  $("#cancelActionEdit").addEventListener("click", resetActionForm);
 
   $("#noteForm").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -1019,6 +1026,7 @@ function renderInjects() {
     gapButton.disabled = !revealed;
     gapButton.title = revealed ? "Create action" : "Reveal this event before creating an action";
     gapButton.addEventListener("click", () => {
+      resetActionForm();
       activateTab("actions");
       $("#actionTitle").value = `Gap from ${inject.title}: `;
       setRelatedEventForForm("action", index, inject.title);
@@ -1496,13 +1504,50 @@ function resetActionRelatedEvent() {
   populateRelatedEventPicklists();
 }
 
-function addAction(title, owner, due, relatedEvent = null) {
+function resetActionForm() {
+  editingAction = null;
+  $("#actionForm").reset();
+  $("#saveAction").textContent = "Add action";
+  $("#cancelActionEdit").hidden = true;
+  resetActionRelatedEvent();
+}
+
+function editAction(index) {
+  const action = state.actions[index];
+  if (!action) return;
+  editingAction = action;
+  $("#actionOwner").value = "";
+  populateOwnerPicklists(action.owner);
+  $("#actionTitle").value = action.title;
+  $("#actionOwner").value = action.owner;
+  const relatedIndex = getRelatedEventIndex(action, getActiveEvents());
+  setRelatedEventForForm("action", relatedIndex, action.relatedEventTitle || "");
+  $("#saveAction").textContent = "Save action";
+  $("#cancelActionEdit").hidden = false;
+  $("#actionTitle").focus();
+}
+
+function updateAction(action, title, owner, relatedEvent = null) {
+  if (!title || !state.actions.includes(action)) return;
+  Object.assign(action, {
+    title,
+    owner: owner || "Unassigned",
+    relatedEventIndex: relatedEvent?.index ?? null,
+    relatedEventTitle: relatedEvent?.title || "",
+    editedAt: new Date().toISOString()
+  });
+  persist();
+  renderActions();
+  renderTimeline();
+  renderReport();
+}
+
+function addAction(title, owner, relatedEvent = null) {
   if (!title) return;
   state.actions.unshift({
     time: new Date().toISOString(),
     title,
     owner: owner || "Unassigned",
-    due: due || "No due date",
     status: "Open",
     relatedEventIndex: relatedEvent?.index ?? null,
     relatedEventTitle: relatedEvent?.title || ""
@@ -1579,12 +1624,14 @@ function renderActions() {
     item.className = "action-item";
     item.innerHTML = `
       <strong>${escapeHtml(action.title)}</strong>
-      <span>${escapeHtml(getElapsedMeta(action.time))} | Owner: ${escapeHtml(action.owner)} | Due: ${escapeHtml(action.due)} | Status: ${escapeHtml(action.status)}</span>
+      <span>${escapeHtml(getElapsedMeta(action.time))} | Owner: ${escapeHtml(action.owner)} | Status: ${escapeHtml(action.status)}</span>
       <div class="inject-actions">
         <button data-action="${index}">${action.status === "Open" ? "Mark closed" : "Reopen"}</button>
+        <button class="edit-action" type="button">Edit action</button>
       </div>
     `;
-    item.querySelector("button").addEventListener("click", () => {
+    item.querySelector(".edit-action").addEventListener("click", () => editAction(index));
+    item.querySelector("[data-action]").addEventListener("click", () => {
       state.actions[index].status = state.actions[index].status === "Open" ? "Closed" : "Open";
       persist();
       renderActions();
@@ -1964,7 +2011,7 @@ function buildReportHtml() {
 
     <section class="report-section">
       <h2>Remediation Tracker</h2>
-      ${buildReportList(state.actions, (action) => `<strong>${escapeHtml(action.title)}</strong><span>${escapeHtml(getElapsedMeta(action.time))} | Owner: ${escapeHtml(action.owner)} | Due: ${escapeHtml(action.due)} | Status: ${escapeHtml(action.status)}</span>`, "No remediation actions recorded")}
+      ${buildReportList(state.actions, (action) => `<strong>${escapeHtml(action.title)}</strong><span>${escapeHtml(getElapsedMeta(action.time))} | Owner: ${escapeHtml(action.owner)} | Status: ${escapeHtml(action.status)}</span>`, "No remediation actions recorded")}
     </section>
 
     <section class="report-section">
@@ -1984,7 +2031,7 @@ function buildReportText() {
   const participantLines = state.participants.length ? state.participants.map((p) => `- ${p.name} (${p.role})`).join("\n") : "- No participants recorded";
   const eventLines = events.map((event, index) => `- T+${event.minute} ${event.title} [${state.revealed.includes(index) ? "Revealed" : "Not revealed"}] | ${getEventElapsedMeta(index)} (${event.controls.join(", ")})`).join("\n");
   const evidenceLines = state.evidence.length ? state.evidence.map((entry) => `- ${getEvidenceEntryLabel(entry)} | ${getEvidenceReportMeta(entry)} | ${entry.text}`).join("\n") : "- No notes or evidence logged";
-  const actionLines = state.actions.length ? state.actions.map((action) => `- ${action.title} | ${getElapsedMeta(action.time)} | Owner: ${action.owner} | Due: ${action.due} | Status: ${action.status}`).join("\n") : "- No remediation actions recorded";
+  const actionLines = state.actions.length ? state.actions.map((action) => `- ${action.title} | ${getElapsedMeta(action.time)} | Owner: ${action.owner} | Status: ${action.status}`).join("\n") : "- No remediation actions recorded";
   const controlLines = controls.map((control) => `- ${control.id} ${control.name}: ${state.evidence.filter((entry) => entry.control === control.id).length} evidence item(s)`).join("\n");
   return `${name}
 
@@ -2309,6 +2356,7 @@ function loadScenarioFile(event) {
 }
 
 function restoreScenario(scenario) {
+  resetActionForm();
   const loadedState = {
     startedAt: null,
     pauses: [],

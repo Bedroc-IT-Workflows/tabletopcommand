@@ -346,12 +346,9 @@
                 Owner
                 <select id="actionOwner"></select>
               </label>
-              <label>
-                Due date
-                <input id="actionDue" type="date" />
-              </label>
             </div>
-            <button class="primary">Add action</button>
+            <button id="saveAction" class="primary" type="submit">Add action</button>
+            <button id="cancelActionEdit" class="ghost" type="button" hidden>Cancel edit</button>
           </form>
           <div id="actionList" class="action-list"></div>
         </section>
