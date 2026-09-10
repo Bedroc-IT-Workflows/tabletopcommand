@@ -69,60 +69,98 @@ const defaultEvents = [
 
 const bcdrEvents = [
   {
-    minute: 0,
-    phase: "Activation",
-    title: "Regional cloud service disruption",
-    summary: "A major cloud provider region hosting customer-facing systems reports widespread availability issues. Monitoring shows elevated errors and failed health checks.",
-    prompt: "Who declares a business continuity event, what severity is assigned, and which recovery plan is activated?",
-    controls: ["A1.2", "CC7.2", "CC7.3"]
+    "minute": 0,
+    "phase": "Briefing",
+    "title": "Bedroc loses email, Teams, and shared documents",
+    "summary": "Minutes 0-5. Fictional Monday, 9:00 a.m.: a Microsoft 365 service disruption prevents many Bedroc employees from using Outlook, Teams, SharePoint, and OneDrive. Staff are safe; offices, power, and internet remain available. There is no evidence of a cyberattack or data loss. Bedroc has no hosted customer-facing systems; the impact is to its own operations and ability to coordinate professional services. Other business applications are not assumed down.",
+    "prompt": "Assign the CEO/designated Leadership decision-maker, VP Operations/plan-owner coordinator, COO, HR, IT Recovery, department recovery leads, Communications Team, counsel liaison, and scribe, with backups. Locate the May 8, 2026 BC/DR plan and a usable current copy outside affected Microsoft 365 services (sections 7 and 14). Record roles, contact-source verification, document version/location, and a decision log on an approved available medium. All actions are simulated; T+ times are discussion minutes, not outage duration.",
+    "controls": [
+      "A1.2",
+      "CC7.4"
+    ]
   },
   {
-    minute: 10,
-    phase: "Assessment",
-    title: "Customer portal unavailable",
-    summary: "Customer-facing teams report that clients cannot access a critical portal. Support volume is increasing and status page ownership is unclear.",
-    prompt: "How is customer impact assessed, who owns communications, and what evidence confirms service impact?",
-    controls: ["A1.2", "CC7.3", "CC7.4"]
+    "minute": 5,
+    "phase": "Assessment",
+    "title": "Operational deadlines continue while information is inaccessible",
+    "summary": "Minutes 5-10. Simulated 10:00 a.m.: BackOffice can reach QuickBooks and Paylocity, but supporting records and approvals are inaccessible. A payroll-preparation cutoff, invoice batch, vendor-payment approval, and project staffing confirmation are due today. These are fictional exercise deadlines. The provider acknowledges disruption without a reliable restoration estimate.",
+    "prompt": "By the end of this round, rank essential work using the BIA and department plans (sections 5, 9, 11). Name each process owner, deadline, minimum information needed, available capability, dependency, and consequence of delay. Which work can continue safely, which must wait, and what evidence supports that choice? Distinguish a working application from a blocked business process. Capture an impact assessment, priorities, owners, assumptions, and next assessment time.",
+    "controls": [
+      "A1.2",
+      "CC7.3",
+      "CC9.2"
+    ]
   },
   {
-    minute: 20,
-    phase: "Continuity",
-    title: "Manual workaround requested",
-    summary: "Operations asks whether teams can use an approved manual process while primary systems are unavailable.",
-    prompt: "Which manual procedures are authorized, how are approvals documented, and what data integrity risks must be controlled?",
-    controls: ["A1.2", "CC6.1", "CC9.2"]
+    "minute": 10,
+    "phase": "Activation",
+    "title": "Leadership must decide whether to invoke the plan",
+    "summary": "Minutes 10-16. Simulated noon: the provider now warns that full restoration could take more than 48 hours; this is an estimate, not a commitment. Several essential processes remain blocked. The CEO is temporarily unavailable, and the team's designated alternate has not been confirmed. A department manager asks whether the team must wait two business days to act.",
+    "prompt": "Document an invoke/defer decision and an authorized CEO or designated Leadership owner now (sections 2.3, 9.6, 10). Compare the two-business-day triggers with section 10's actual/likely loss and estimated recovery beyond 48 hours; distinguish activation thresholds from recovery objectives. Do not invent delegated authority: identify how to obtain designation and escalate if unavailable. Record the basis, decision time, scope, approver, reassessment trigger, and a plan clarification for the owner. Identify what evidence would trigger the separate Incident Response Plan if a cyberattack becomes suspected.",
+    "controls": [
+      "CC7.3",
+      "CC7.4",
+      "A1.2"
+    ]
   },
   {
-    minute: 32,
-    phase: "Failover",
-    title: "Failover decision point",
-    summary: "Engineering can fail over to a secondary environment, but the recovery point is 45 minutes old and validation is incomplete.",
-    prompt: "Who approves failover, what recovery time and recovery point objectives apply, and what validation is required before customer traffic moves?",
-    controls: ["A1.2", "CC7.4", "CC9.2"]
+    "minute": 16,
+    "phase": "Communications",
+    "title": "Reach staff without the normal collaboration tools",
+    "summary": "Minutes 16-22. Simulated 12:30 p.m.: managers report inconsistent staff instructions. A current staff contact list is normally accessed through SharePoint, and some employees have not acknowledged a check-in. Teams remains unavailable. Staff propose personal email and phones to keep work moving; no danger to personnel has been reported.",
+    "prompt": "Use sections 7 and 12-14 to assign COO essential-staff selection, VP Operations notification setup, HR contact verification, and Leadership-directed Communications ownership. Choose available authorized channels, confirm acknowledgments, and escalate unreachable staff. Separate permitted contact instructions from sending business records: do not store Bedroc data on personal devices. Vendor contact must follow the company-phone or Teams/Signal rule. Capture an approved staff message, sender/approver, audience, acknowledgment log, help contact, and next update time. Identify whether an approved alternate supports 50+ remote users (9.3), or record the gap.",
+    "controls": [
+      "CC7.4",
+      "CC6.1",
+      "A1.2"
+    ]
   },
   {
-    minute: 45,
-    phase: "Third Party",
-    title: "Vendor status remains ambiguous",
-    summary: "The cloud provider posts a generic update but does not provide a clear restoration estimate. Leadership asks whether contractual or customer commitments are affected.",
-    prompt: "How are vendor updates monitored, who evaluates contractual obligations, and what evidence is retained for third-party risk review?",
-    controls: ["CC9.2", "A1.2"]
+    "minute": 22,
+    "phase": "Continuity decisions",
+    "title": "A workaround needs approval and reliable records",
+    "summary": "Minutes 22-28. Simulated 1:00 p.m.: Finance proposes preparing a payment batch using an alternate copy of supporting records last synchronized 26 hours before the outage. Its completeness has not been confirmed. Another team proposes moving customer documents to a personal drive. IT reports only half its recovery staff currently available; the plan calls for 60% for Tier 1. No alternate provider capacity or workspace arrangement has been verified.",
+    "prompt": "Approve, reject, or limit each workaround with an owner and rationale (sections 7-9, 17). Check the 26-hour copy against Tier 1's less-than-24-hour data-loss target; inaccessible originals do not prove data loss. Ask for backup age, completeness, access authorization, and restore-test evidence rather than assuming backups are usable. Define approval controls, duplicate-payment prevention, reconciliation and backlog logging. Record safe alternatives, staffing escalation, and any Leadership-approved exception's scope, duration, justification, and review date through ServiceDesk Plus or a designated channel. Do not presume an unnamed backup site or supplier exists.",
+    "controls": [
+      "A1.2",
+      "CC6.1",
+      "CC9.2"
+    ]
   },
   {
-    minute: 60,
-    phase: "Recovery",
-    title: "Service restored with data reconciliation needed",
-    summary: "Primary services are returning, but transaction reconciliation is required before declaring full recovery.",
-    prompt: "What checks prove recovery is complete, who signs off, and how are discrepancies tracked to closure?",
-    controls: ["A1.2", "CC7.4", "CC7.5"]
+    "minute": 28,
+    "phase": "External obligations",
+    "title": "A delayed deliverable prompts a customer update",
+    "summary": "Minutes 28-34. Simulated 1:30 p.m.: a customer asks whether tomorrow's Bedroc workshop will proceed; its own systems are operating normally. A vendor needs confirmation of delayed payment processing. A manager asks whether agencies must also be notified. The team has not yet obtained the relevant MSA or confirmed whether section 13's notification conditions apply.",
+    "prompt": "With counsel guidance and Leadership approval, decide whom to notify, using backup MSAs and verified contacts (section 13). Identify how the plan's four-hour partner and conditional eight-hour agency requirements apply, their clock-start basis, owner, deadline, and evidence; treat these as plan requirements for evaluation, not universal legal rules. Do not invent an applicable agency or contractual term. Capture a factual message about Bedroc's operational/delivery impact, safe alternatives, uncertain restoration timing, and next update. Record decisions to notify or defer, approvals, vendor case/status evidence, and any unresolved obligation.",
+    "controls": [
+      "CC7.4",
+      "CC9.2"
+    ]
   },
   {
-    minute: 75,
-    phase: "Post-Event",
-    title: "After-action review and improvement plan",
-    summary: "Executives request a concise summary of downtime, decisions, communications, control performance, and remediation items.",
-    prompt: "What artifacts are retained, which continuity gaps become action items, and how will leadership track remediation?",
-    controls: ["CC7.5", "A1.2", "CC9.2"]
+    "minute": 34,
+    "phase": "Recovery acceptance",
+    "title": "Service returns, but business recovery is unproven",
+    "summary": "Minutes 34-40. Simulated Tuesday, 11:00 a.m. (26 outage hours): the provider reports restoration. Some staff can access email and documents; departments have not confirmed full access, record completeness, pending approvals, or reconciliation of manual work. There is still no confirmed data loss. Leadership wants to declare normal operations.",
+    "prompt": "Agree on department acceptance evidence before the CEO announces normal operations (sections 5, 9, 9.6, 10). Compare Tier 1's 48-hour RTO and less-than-24-hour RPO with section 9.5's four-hour critical-data recovery target; distinguish service availability, data recovery, and business-process completion. Record Leadership's working interpretation and a plan-owner clarification instead of silently rewriting the policy. Name sign-off owners for payroll preparation, invoices, payments, and project coordination; reconcile backlogs and prevent duplicate actions. Capture validation, exceptions, monitoring/reopening criteria, employee/customer updates, and resume/defer approval.",
+    "controls": [
+      "A1.2",
+      "CC7.4",
+      "CC7.5"
+    ]
+  },
+  {
+    "minute": 40,
+    "phase": "Debrief",
+    "title": "Build the evidence package and assign plan improvements",
+    "summary": "Minutes 40-45. Finish the tabletop at minute 45, even if simulated recovery remains open. Review the impact assessment, activation decision, role handoffs, approved messages, continuity approvals, vendor evidence, and department recovery sign-offs. Exercise completion is not authorization to declare business recovery.",
+    "prompt": "Which decision took longest, relied on an unavailable person, or used an unverified assumption? Required facilitator closeout: list the actual plan sections, BIA, department procedures, contacts, agreements, backup-test records, and tools consulted, with version/location and usability or a gap. Assign three improvements with owner, due date, and completion evidence; include activation/target inconsistencies, customer-hosting language, or unverified alternate resources where relevant. Route documented findings to the designated plan owner (Dallas Dover in the supplied plan) and Leadership under sections 15 and 19. Name the evidence-retention and follow-up owner; record unresolved decisions.",
+    "controls": [
+      "CC7.5",
+      "CC9.2",
+      "A1.2"
+    ]
   }
 ];
 
@@ -135,10 +173,10 @@ const defaultRunbook = {
 };
 
 const bcdrRunbook = {
-  id: "bedroc-business-continuity-disaster-recovery",
-  name: "Business Continuity and Disaster Recovery Tabletop Exercise",
-  description: "A business continuity and disaster recovery tabletop focused on cloud service disruption, continuity workarounds, failover decisions, customer communications, recovery validation, and after-action improvement.",
-  objective: "Validate business continuity activation, disaster recovery decision-making, communication ownership, failover approval, recovery validation, vendor monitoring, and evidence capture.",
+  id: "bedroc-business-operations-continuity-45-v2",
+  name: "Bedroc Business Operations Continuity (45 minutes)",
+  description: "A fictional prolonged Microsoft 365 outage disrupts Bedroc internal communications, records, approvals, and business coordination. Based on the supplied BC/DR plan dated May 8, 2026. No hosted customer systems or confirmed cyberattack are assumed. Eight facilitator-led rounds start at 0, 5, 10, 16, 22, 28, 34, and 40 exercise minutes; finish at 45. Simulated outage time advances independently.",
+  objective: "Practice documented business-impact assessment, authorized activation, role ownership and backups, approved communications, controlled workarounds, evidence-based recovery acceptance, and plan improvement. Capture decisions, rationale, approvers, deadlines, document references, and three owned actions. Technical implementation stays with IT; participants decide priorities and required evidence. All actions are simulated.",
   events: bcdrEvents
 };
 
