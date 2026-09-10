@@ -20,6 +20,14 @@ Open `outputs/index.html` in a browser.
 
 Local file mode bypasses hosted SSO so the app can be tested without Azure.
 
+## Actions
+
+Use **Edit action** to change an action's description, owner, or related scenario event, then **Save action** or **Cancel edit**. Open/closed status remains controlled by **Mark closed** / **Reopen**. Editing preserves the original recorded time.
+
+Actions no longer require or display due dates. Older scenario JSON files continue to load; legacy `due` fields are preserved when saved again but omitted from the action list and generated reports. Previously saved or manually edited report text remains as saved until you regenerate the report. New actions contain no due date. Scenario prompts mentioning due dates can be treated as optional follow-up guidance.
+
+Run regression checks with `node --test tests/*.test.cjs`.
+
 ## Pause and Resume
 
 After starting an exercise, use **Pause exercise** beside the elapsed timer on the Scenario Events tab when the team needs a break. The timer freezes and event reveals and completion are blocked until you select **Resume exercise**. Participants, revealed events, notes, and actions are preserved, and notes can still be edited during a break.
