@@ -50,6 +50,29 @@ End each round with a decision, rationale, owner, and reassessment time. Simulat
 
 Required facilitator closeout: record the policies, procedures, tools, and controls actually referenced, their version/location and usability, or a gap when unavailable. Examples include the Incident Response Policy, Access Control Policy, M365 Account Recovery Procedure, Conditional Access Standard, and Customer Notification Procedure; these names are examples, not an assertion that Bedroc has documents with those titles. Record three improvements with owners, due dates, and completion evidence. These requirements are facilitator prompts rather than new application validation rules. All incident actions are simulated; exercise completion does not imply incident resolution.
 
+## Bedroc Business Operations Continuity
+
+Select **Bedroc Business Operations Continuity (45 minutes)** for a fictional prolonged Microsoft 365 outage affecting internal email, collaboration, shared records, approvals, and coordination. Bedroc does not host customer-facing systems; customer impact in this exercise is delayed professional-service delivery or business communications. Other SaaS applications are not assumed unavailable just because their supporting records or approvals are blocked.
+
+The scenario references the supplied BC/DR plan dated May 8, 2026. Personal emergency contact details are not embedded; participants locate and verify authorized contact sources. The revised template has a new ID so existing users receive it without overwriting saved originals, customizations, or active exercise snapshots. Choose it for a new exercise.
+
+| Exercise minutes | Decision and evidence |
+| --- | --- |
+| 0-5 | Assign roles and backups; locate an available plan copy and decision log |
+| 5-10 | Prioritize business processes and document deadlines, dependencies, and owners |
+| 10-16 | Record an authorized activation decision and reconcile activation thresholds |
+| 16-22 | Approve staff instructions and track acknowledgments without Teams/email |
+| 22-28 | Approve controlled workarounds, record staffing gaps and backup confidence |
+| 28-34 | Evaluate plan/MSA obligations with counsel and approve factual updates |
+| 34-40 | Obtain department recovery evidence, reconcile work, and authorize resumption |
+| 40-45 | Assemble evidence and assign three plan improvements |
+
+Reveal events manually. Exercise time and simulated outage time are separate; the scenario advances from Monday morning to Tuesday recovery. Pauses do not consume discussion time. The exercise does not automatically end at minute 45.
+
+Facilitators should require decisions, rationale, approvers, owners, deadlines, reassessment triggers, and references to documents actually used. The plan's two-business-day activation triggers, estimated-recovery triggers, 48-hour Tier 1 RTO, less-than-24-hour Tier 1 RPO, and four-hour critical-data target are explicitly discussed as differing provisions requiring a documented interpretation and plan-owner follow-up. The four-hour partner and conditional eight-hour agency notification provisions are supplied-plan requirements to evaluate with counsel, not assertions of universally applicable law. This change does not amend the plan or invent regulatory/contractual obligations.
+
+Closeout evidence includes the impact assessment, activation record, ownership/handoffs, approved messages, workaround/exception approvals, vendor and backup evidence, department sign-offs, document-reference inventory, and three improvements with owners, due dates, and completion evidence. These are facilitator requirements, not new application completion gates. All response actions are simulated.
+
 ## Azure SSO
 
 The app includes `outputs/staticwebapp.config.json`, which requires authenticated users when deployed to Azure Static Web Apps.
